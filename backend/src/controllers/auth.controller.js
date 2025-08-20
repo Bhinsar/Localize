@@ -1,3 +1,4 @@
+const e = require("cors");
 const {supabase} = require("../utils/supabase");
 const fs = require('fs').promises;
 const path = require('path');
@@ -97,3 +98,53 @@ exports.refreshToken = async (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 };
+
+exports.signInWithGoogle = async (req, res) => {
+    try{
+        const{id_token} = req.body;
+        if(!id_token) {
+            return res.status(400).json({ error: "ID token is required" });
+        }
+        const{data: authData, error: authError} = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            id_token
+        });
+
+        if (authError) throw authError;
+
+        const user = authData.user;
+        if (!user) {
+            return res.status(400).json({ error: "Authentication failed: No user returned" });
+        }
+
+        const{ data: existingProfile, error: profileError } = await supabase
+            .from("profiles")
+            .select("*")
+            .eq("id", user.id)
+            .single();
+
+        if (profileError) throw profileError;
+
+        if(!existingProfile){
+            const { error: insertError } = await supabase
+                .from("profiles")
+                .insert({
+                    id: user.id,
+                    full_name: user.user_metadata.full_name,
+                    avatar_url: user.user_metadata.avatar_url
+                });
+
+            if (insertError) throw insertError;
+        }
+
+        res.status(200).json({ 
+            message: "User signed in successfully.",
+            user: authData.user,
+            token: authData.session.access_token,
+            refreshToken: authData.session.refresh_token
+        });
+    } catch (error) {
+        console.error("Error signing in with Google:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+}
