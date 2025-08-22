@@ -1,0 +1,14 @@
+{
+  "@@locale": "hi",
+  "email": "ईमेल",
+  "pleaseEnterEmail": "कृपया अपना ईमेल दर्ज करें",
+  "pleaseEnterValidEmail": "कृपया एक मान्य ईमेल दर्ज करें",
+  "password": "पासवर्ड",
+  "pleaseEnterPassword": "कृपया अपना पासवर्ड दर्ज करें",
+  "pleaseEnterValidPassword": "कृपया एक मान्य पासवर्ड दर्ज करें",
+  "login": "लॉगिन",
+  "or": "या",
+  "loginSuccessful": "लॉगिन सफल",
+  "loginError": "लॉगिन त्रुटि कृपया पुनः प्रयास करें",
+  "loginWithGoogle": "गूगल के साथ लॉगिन करें"
+}

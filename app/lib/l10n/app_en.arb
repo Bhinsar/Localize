@@ -1,0 +1,14 @@
+{
+  "@@locale": "en",
+  "email": "Email",
+  "pleaseEnterEmail": "Please enter your email",
+  "pleaseEnterValidEmail": "Please enter a valid email",
+  "password": "Password",
+  "pleaseEnterPassword": "Please enter your password",
+  "pleaseEnterValidPassword": "Please enter a valid password",
+  "login": "Login",
+  "or": "OR",
+  "loginSuccessful": "Login successful",
+  "loginError": "Login error please try again",
+  "loginWithGoogle": "Login with Google"
+}
