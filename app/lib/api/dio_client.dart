@@ -2,8 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart'; // Import provider
 import 'package:app/api/root_url.dart';
-import 'package:app/services/locale_provider.dart'; // Import your LocaleProvider
-import 'package:app/services/navigation_service.dart'; // Import the NavigationService
+import 'package:app/services/locale_provider.dart'; // Import the NavigationService
 
 class DioClient {
   final Dio _dio = Dio();
@@ -11,20 +10,13 @@ class DioClient {
   static final String _baseUrl = RootUrl.url;
 
   DioClient() {
-    _dio.interceptors.add(      
+    _dio.options.baseUrl = _baseUrl;
+    _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
           // Get the current context from the global key
-          final context = NavigationService.navigatorKey.currentContext;
-
-          if (context != null) {
-            // Use the context to get the LocaleProvider
-            final provider = Provider.of<LocaleProvider>(context, listen: false);
-            options.headers['language'] = provider.locale?.languageCode ?? 'en';
-          } else {
-            // Fallback if context is not available
-            options.headers['language'] = 'en';
-          }
+          final languageCode = await _storage.read(key: 'language_code');
+          options.headers['language'] = languageCode ?? 'en';
 
           final token = await _storage.read(key: 'token');
           if (token != null) {
@@ -33,20 +25,20 @@ class DioClient {
           return handler.next(options);
         },
         onError: (DioException error, ErrorInterceptorHandler handler) async {
-          // ... your existing onError logic remains the same
           if (error.response?.statusCode == 401) {
             print("Token expired, attempting to refresh...");
             String? newAccessToken = await _refreshToken();
 
             if (newAccessToken != null) {
-              error.requestOptions.headers['Authorization'] = 'Bearer $newAccessToken';
+              error.requestOptions.headers['Authorization'] =
+                  'Bearer $newAccessToken';
               print("Token refreshed. Retrying the original request...");
               return handler.resolve(await _dio.fetch(error.requestOptions));
             } else {
               print("Failed to refresh token. Logging out.");
               await _storage.deleteAll();
-            }
-          }
+            }          }
+
           return handler.next(error);
         },
       ),
@@ -63,10 +55,10 @@ class DioClient {
       final refreshToken = await _storage.read(key: 'refresh_token');
       if (refreshToken == null) return null;
 
-      final response = await refreshTokenDio.post('/refreshToken', // Use your actual refresh endpoint
-          data: {
-            'refreshToken': refreshToken,
-          });
+      final response = await refreshTokenDio.post(
+        '/refreshToken', // Use your actual refresh endpoint
+        data: {'refreshToken': refreshToken},
+      );
 
       if (response.statusCode == 200) {
         final newAccessToken = response.data['token'];

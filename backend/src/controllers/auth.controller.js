@@ -13,50 +13,22 @@ exports.registerUser = async (req, res) => {
             password,
         });
 
-        if (authError) throw authError;
+        if (authError){
+            return res.status(400).json({ error: authError.message });
+        }
         if (!authData.user) throw new Error("Registration failed: No user returned");
-
-        // let avatar_url = null;
-
-        // Step 2: Upload avatar if provided
-        // if (req.file) {
-        //     const filePath = path.join(__dirname, "../uploads", req.file.filename);
-        //     const fileBuffer = await fs.readFile(filePath);
-
-        //     const { data: uploadData, error: uploadError } = await supabase.storage
-        //         .from("avatars")
-        //         .upload(`uploads/${req.file.filename}`, fileBuffer, {
-        //             contentType: req.file.mimetype,
-        //             upsert: true,
-        //         });
-
-        //     if (uploadError) throw uploadError;
-
-        //     avatar_url = `${process.env.SUPABASE_URL}/storage/v1/object/public/avatars/${uploadData.path}`;
-
-        //     await fs.unlink(filePath);
-        // }
-
-        // Step 3: Add the user's profile to the public.profiles table
         const { error: profileError } = await supabase
             .from("profiles")
             .insert({ 
                 id: authData.user.id,
                 full_name,
-                // avatar_url
             });
 
         if (profileError) throw profileError;
 
-        // Step 4: Return success with tokens
-        const token = authData.session?.access_token;
-        const refreshToken = authData.session?.refresh_token;
-
         res.status(201).json({ 
             message: "User registered successfully.",
             user: authData.user,
-            token,
-            refreshToken
         });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -76,7 +48,9 @@ exports.loginUser = async (req, res) => {
         const token = data.session.access_token;
         const refreshToken = data.session.refresh_token;
 
-        res.status(200).json({ data, token, refreshToken });
+        const existNumber = !!data.user.phone_number;
+
+        res.status(200).json({ data, token, refreshToken, existNumber });
     } catch (error) {
         console.error("Error logging in user:", error);
         res.status(500).json({ error: "Internal Server Error" });
@@ -98,52 +72,77 @@ exports.refreshToken = async (req, res) => {
     }
 };
 
-    exports.signInWithGoogle = async (req, res) => {
-        try{
-            const{id_token} = req.body;
-            if(!id_token) {
-                return res.status(400).json({ error: "ID token is required" });
-            }
-            const{data: authData, error: authError} = await supabase.auth.signInWithOAuth({
-                provider: 'google',
-                id_token
-            });
-
-            if (authError) throw authError;
-
-            const user = authData.user;
-            if (!user) {
-                return res.status(400).json({ error: "Authentication failed: No user returned" });
-            }
-
-            const{ data: existingProfile, error: profileError } = await supabase
-                .from("profiles")
-                .select("*")
-                .eq("id", user.id)
-                .single();
-
-            if (profileError) throw profileError;
-
-            if(!existingProfile){
-                const { error: insertError } = await supabase
-                    .from("profiles")
-                    .insert({
-                        id: user.id,
-                        full_name: user.user_metadata.full_name,
-                        avatar_url: user.user_metadata.avatar_url
-                    });
-
-                if (insertError) throw insertError;
-            }
-
-            res.status(200).json({ 
-                message: "User signed in successfully.",
-                user: authData.user,
-                token: authData.session.access_token,
-                refreshToken: authData.session.refresh_token
-            });
-        } catch (error) {
-            console.error("Error signing in with Google:", error);
-            res.status(500).json({ error: "Internal Server Error" });
+exports.signInWithGoogle = async (req, res) => {
+    try{
+        const{id_token} = req.body;
+        if(!id_token) {
+            return res.status(400).json({ error: "ID token is required" });
         }
+        const{data: authData, error: authError} = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            id_token
+        });
+
+        if (authError) throw authError;
+
+        const user = authData.user;
+        if (!user) {
+            return res.status(400).json({ error: "Authentication failed: No user returned" });
+        }
+
+        const{ data: existingProfile, error: profileError } = await supabase
+            .from("profiles")
+            .select("*")
+            .eq("id", user.id)
+            .single();
+
+        if (profileError) throw profileError;
+
+        if(!existingProfile){
+            const { error: insertError } = await supabase
+                .from("profiles")
+                .insert({
+                    id: user.id,
+                    full_name: user.user_metadata.full_name,
+                    avatar_url: user.user_metadata.avatar_url
+                });
+
+            if (insertError) throw insertError;
+        }
+
+        const numberExists = !!existingProfile.phone_number;
+
+        res.status(200).json({ 
+            message: "User signed in successfully.",
+            user: authData.user,
+            numberExists
+        });
+    } catch (error) {
+        console.error("Error signing in with Google:", error);
+        res.status(500).json({ error: "Internal Server Error" });
     }
+}
+
+exports.addNumberAndRole = async (req, res) => {
+    try{
+        const { userId, phone_number, role } = req.body;
+
+        // Validate input
+        if (!userId || !number || !role) {
+            return res.status(400).json({ error: "All fields are required" });
+        }
+
+        // Add number and role to the user's profile
+        const { data, error } = await supabase
+            .from("profiles")
+            .update({ phone_number, role })
+            .eq("id", userId);
+
+        if (error) throw error;
+
+        res.status(200).json({ message: "Number and role added successfully.", data });
+    }catch(error){
+        console.error("Error adding number and role:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+}

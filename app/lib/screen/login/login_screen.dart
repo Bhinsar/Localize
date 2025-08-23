@@ -37,7 +37,6 @@ class _LoginScreenState extends State<LoginScreen> {
       }
       await _authApi.login(_emailController.text, _passwordController.text);
       context.go('/home');
-      SnackbarUtils.showSuccess(context, l10.loginSuccessful);
     } catch (e) {
       print('Login error: $e');
       SnackbarUtils.showError(context, l10.loginError);
@@ -52,7 +51,6 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       await _authApi.loginWithGoogle();
       context.go('/home');
-      SnackbarUtils.showSuccess(context, l10.loginSuccessful);
     } catch (e) {
       print('Login error: $e');
       SnackbarUtils.showError(context, l10.loginError);
@@ -113,10 +111,27 @@ class _LoginScreenState extends State<LoginScreen> {
                         if (value == null || value.isEmpty) {
                           return l10.pleaseEnterPassword;
                         }
+                        if (value.length < 6) {
+                          return l10.passwordMustBeAtLeast6Chars;
+                        }
                         return null;
                       },
                     ),
                     SizedBox(height: d.height10 / 2),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(l10.dontHaveAccount),
+                        SizedBox(width: 1),
+                        GestureDetector(
+                          onTap: () {
+                            context.push('/register');
+                          },
+                          child: Text(l10.register, style: TextStyle(color: Colors.green)),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: d.height10),
                     ElevatedButton(
                       onPressed: _isLoading ? null : () => _login(l10),
                       child: _isLoading

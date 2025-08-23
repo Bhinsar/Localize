@@ -3,7 +3,7 @@ const { registerUser, loginUser, refreshToken, signInWithGoogle } = require('../
 const { upload } = require('../utils/multer');
 const router = express.Router();
 
-router.post('/register', upload.single('file'), registerUser);
+router.post('/register',  registerUser);
 router.post('/login', loginUser);
 router.post('/refreshToken', refreshToken);
 router.post('/google', signInWithGoogle);

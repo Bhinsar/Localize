@@ -134,6 +134,12 @@ abstract class AppLocalizations {
   /// **'Please enter a valid password'**
   String get pleaseEnterValidPassword;
 
+  /// No description provided for @passwordMustBeAtLeast6Chars.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 6 characters'**
+  String get passwordMustBeAtLeast6Chars;
+
   /// No description provided for @login.
   ///
   /// In en, this message translates to:
@@ -163,6 +169,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Login with Google'**
   String get loginWithGoogle;
+
+  /// No description provided for @register.
+  ///
+  /// In en, this message translates to:
+  /// **'Register'**
+  String get register;
+
+  /// No description provided for @dontHaveAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t have an account?'**
+  String get dontHaveAccount;
+
+  /// No description provided for @createAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Account'**
+  String get createAccount;
+
+  /// No description provided for @pleaseEnterFullName.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your full name'**
+  String get pleaseEnterFullName;
+
+  /// No description provided for @fullName.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Name'**
+  String get fullName;
+
+  /// No description provided for @pleaseEnterConfirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your confirm password'**
+  String get pleaseEnterConfirmPassword;
+
+  /// No description provided for @confirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Password'**
+  String get confirmPassword;
+
+  /// No description provided for @passwordsDoNotMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match'**
+  String get passwordsDoNotMatch;
+
+  /// No description provided for @userAlreadyExists.
+  ///
+  /// In en, this message translates to:
+  /// **'User already exists'**
+  String get userAlreadyExists;
+
+  /// No description provided for @registrationError.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration error please try again'**
+  String get registrationError;
+
+  /// No description provided for @phoneNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number'**
+  String get phoneNumber;
+
+  /// No description provided for @pleaseEnterPhoneNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your phone number'**
+  String get pleaseEnterPhoneNumber;
+
+  /// No description provided for @role.
+  ///
+  /// In en, this message translates to:
+  /// **'Role'**
+  String get role;
+
+  /// No description provided for @pleaseEnterValidNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid number'**
+  String get pleaseEnterValidNumber;
+
+  /// No description provided for @client.
+  ///
+  /// In en, this message translates to:
+  /// **'Client'**
+  String get client;
+
+  /// No description provided for @provider.
+  ///
+  /// In en, this message translates to:
+  /// **'Provider'**
+  String get provider;
+
+  /// No description provided for @somethingWentWrongPlease.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong please try again'**
+  String get somethingWentWrongPlease;
+
+  /// No description provided for @submit.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit'**
+  String get submit;
 }
 
 class _AppLocalizationsDelegate
