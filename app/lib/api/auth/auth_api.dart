@@ -8,12 +8,13 @@ class AuthApi {
   final _storage = FlutterSecureStorage();
   final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
 
-  Future<Map<String, dynamic>?> login(String email, String password) async {
+  Future<Map<String, dynamic>> login(String email, String password) async {
     try {
       final response = await _dio.post(
         '/login',
         data: {'email': email, 'password': password},
       );
+      print('Login response: ${response.data}');
       if (response.statusCode == 200) {
         _storage.write(key: 'token', value: response.data['token']);
         _storage.write(
@@ -25,15 +26,21 @@ class AuthApi {
           value: response.data['existNumber'].toString(),
         );
         return response.data;
-      } else {
-        throw Exception('Failed to login');
+      } 
+      throw Exception('Failed to login');
+      
+    } on DioException catch (e) {
+      if (e.response != null) {
+        if (e.response?.statusCode == 400 || e.response?.statusCode == 401) {
+          return {
+            'error': e.response?.data['error'] ?? 'Invalid credentials',
+          };
+        }
       }
-    } catch (e) {
       print('Login error: $e');
-      return null;
+      return {'error': 'server error'};
     }
   }
-
 
   Future<Map<String, dynamic>?> register(
     String email,
@@ -45,12 +52,18 @@ class AuthApi {
         '/register',
         data: {'email': email, 'password': password, 'full_name': fullName},
       );
-      return response.data;
-    } on DioException catch (e) { 
+      if (response.statusCode == 200) {
+        return response.data;
+      }
+      throw Exception('Failed to register');
+    } on DioException catch (e) {
       if (e.response != null) {
-
         if (e.response?.statusCode == 400) {
-          return {'error': e.response?.data['message'] ?? 'User already registered or bad data'};
+          return {
+            'error':
+                e.response?.data['message'] ??
+                'User already registered or bad data',
+          };
         }
       }
       print('Registration error: $e');
@@ -60,10 +73,9 @@ class AuthApi {
 
   Future<Map<String, dynamic>?> loginWithGoogle() async {
     try {
-      // 2. The .signIn() method is now correct because the object was created properly.
+      print('Starting Google sign-in process...');
       final GoogleSignInAccount? googleUser = await _googleSignIn
           .authenticate();
-
       if (googleUser == null) {
         print('Google sign-in canceled by user.');
         return null;
@@ -91,6 +103,7 @@ class AuthApi {
           key: 'existNumber',
           value: response.data['existNumber'].toString(),
         );
+
         return response.data;
       } else {
         throw Exception('Failed to sign in with Google');
@@ -102,11 +115,14 @@ class AuthApi {
     }
   }
 
-  Future<Map<String, String>?> addNumberAndRole(String userId, String number, String role) async {
+  Future<Map<String, dynamic>?> addNumberAndRole(
+    String number,
+    String role,
+  ) async {
     try {
       final response = await _dio.post(
         '/addNumberAndRole',
-        data: {'userId': userId, 'number': number, 'role': role},
+        data: {'phone_number': number, 'role': role},
       );
       if (response.statusCode == 200) {
         _storage.write(key: 'token', value: response.data['token']);

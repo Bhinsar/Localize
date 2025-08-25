@@ -1,8 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:provider/provider.dart'; // Import provider
 import 'package:app/api/root_url.dart';
-import 'package:app/services/locale_provider.dart'; // Import the NavigationService
 
 class DioClient {
   final Dio _dio = Dio();

@@ -10,7 +10,7 @@
   "login": "Login",
   "or": "OR",
   "loginSuccessful": "Login successful",
-  "loginError": "Login error please try again",
+  "loginError": "Invalid credentials",
   "loginWithGoogle": "Login with Google",
   "register": "Register",
   "dontHaveAccount": "Don't have an account?",

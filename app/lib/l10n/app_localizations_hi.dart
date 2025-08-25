@@ -40,7 +40,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get loginSuccessful => 'लॉगिन सफल';
 
   @override
-  String get loginError => 'लॉगिन त्रुटि कृपया पुनः प्रयास करें';
+  String get loginError => 'अमान्य क्रेडेंशियल्स';
 
   @override
   String get loginWithGoogle => 'गूगल के साथ लॉगिन करें';

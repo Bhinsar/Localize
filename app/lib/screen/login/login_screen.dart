@@ -35,8 +35,15 @@ class _LoginScreenState extends State<LoginScreen> {
       if (!_formKey.currentState!.validate()) {
         return;
       }
-      await _authApi.login(_emailController.text, _passwordController.text);
-      context.go('/home');
+      final response = await _authApi.login(
+        _emailController.text,
+        _passwordController.text,
+      );
+      if (response != null) {
+        context.go('/home');
+      } else {
+        throw Exception('Login failed');
+      }
     } catch (e) {
       print('Login error: $e');
       SnackbarUtils.showError(context, l10.loginError);
@@ -49,11 +56,15 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _loginWithGoogle(l10) async {
     try {
-      await _authApi.loginWithGoogle();
-      context.go('/home');
+      final response = await _authApi.loginWithGoogle();
+      if (response != null) {
+        context.go('/home');
+      }else {
+        throw Exception('Google login failed');
+      }
     } catch (e) {
       print('Login error: $e');
-      SnackbarUtils.showError(context, l10.loginError);
+      SnackbarUtils.showError(context, l10.somethingWentWrongPlease);
     }
   }
 
@@ -127,7 +138,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           onTap: () {
                             context.push('/register');
                           },
-                          child: Text(l10.register, style: TextStyle(color: Colors.green)),
+                          child: Text(
+                            l10.register,
+                            style: TextStyle(color: Colors.green),
+                          ),
                         ),
                       ],
                     ),

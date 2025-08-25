@@ -40,7 +40,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginSuccessful => 'Login successful';
 
   @override
-  String get loginError => 'Login error please try again';
+  String get loginError => 'Invalid credentials';
 
   @override
   String get loginWithGoogle => 'Login with Google';

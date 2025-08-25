@@ -161,7 +161,7 @@ abstract class AppLocalizations {
   /// No description provided for @loginError.
   ///
   /// In en, this message translates to:
-  /// **'Login error please try again'**
+  /// **'Invalid credentials'**
   String get loginError;
 
   /// No description provided for @loginWithGoogle.

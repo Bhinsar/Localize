@@ -10,7 +10,7 @@
   "login": "लॉगिन",
   "or": "या",
   "loginSuccessful": "लॉगिन सफल",
-  "loginError": "लॉगिन त्रुटि कृपया पुनः प्रयास करें",
+  "loginError": "अमान्य क्रेडेंशियल्स",
   "loginWithGoogle": "गूगल के साथ लॉगिन करें",
   "register": "रजिस्टर करें",
   "dontHaveAccount": "क्या आपके पास खाता नहीं है?",

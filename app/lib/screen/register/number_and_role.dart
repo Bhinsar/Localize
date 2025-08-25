@@ -35,35 +35,18 @@ class _NumberAndRoleState extends State<NumberAndRole> {
     });
 
     try {
-      final userId = await _storage.read(key: "id");
-      if (userId == null) {
-        // Provide a more specific error message
-        throw Exception("User ID not found. Please log in again.");
-      }
       await _authService.addNumberAndRole(
-        userId,
         _numberController.text,
-        _selectedRole, // Use the state variable here
+        _selectedRole,
       );
-
-      // --- ADDED: Success handling ---
-      if (mounted) {
-        // Navigate to the next screen, e.g., home
-        // Replace '/home' with your actual home route
-        context.go('/home'); 
-      }
+      context.go('/home'); 
     } catch (e) {
       print("Error on editing number and role: $e");
-      if (mounted) {
-        // Use a more specific error message if possible from the exception
         SnackbarUtils.showError(context, e.toString());
-      }
     } finally {
-      if (mounted) {
         setState(() {
           _isLoading = false;
         });
-      }
     }
   }
 
@@ -80,12 +63,6 @@ class _NumberAndRoleState extends State<NumberAndRole> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.black),
-            onPressed: () {
-              context.pop();
-            },
-          ),
           backgroundColor: Colors.transparent,
           title: Image.asset(
             "assets/images/app_bar_logo.PNG",

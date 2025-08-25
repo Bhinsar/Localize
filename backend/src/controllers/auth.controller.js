@@ -29,6 +29,8 @@ exports.registerUser = async (req, res) => {
         res.status(201).json({ 
             message: "User registered successfully.",
             user: authData.user,
+            token: authData.session.access_token,
+            refreshToken: authData.session.refresh_token
         });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -43,14 +45,30 @@ exports.loginUser = async (req, res) => {
             password: password,
         });
 
-        if (error) throw error;
+        if (error) {
+            return res.status(400).json({ error: error.message });
+        }
 
         const token = data.session.access_token;
         const refreshToken = data.session.refresh_token;
 
-        const existNumber = !!data.user.phone_number;
+        const { data: profileData, error: profileError } = await supabase
+            .from("profiles")
+            .select("phone_number")
+            .eq("id", data.user.id)
+            .single();
 
-        res.status(200).json({ data, token, refreshToken, existNumber });
+        if (profileError) {
+            return res.status(400).json({ error: profileError.message });
+        }
+
+        let existNumber = false;
+
+        if (profileData.phone_number !== null) {
+            existNumber = true;
+        }
+
+        res.status(200).json({ user:data, token, refreshToken, existNumber });
     } catch (error) {
         console.error("Error logging in user:", error);
         res.status(500).json({ error: "Internal Server Error" });
@@ -74,16 +92,19 @@ exports.refreshToken = async (req, res) => {
 
 exports.signInWithGoogle = async (req, res) => {
     try{
-        const{id_token} = req.body;
+        const { id_token } = req.body;
         if(!id_token) {
             return res.status(400).json({ error: "ID token is required" });
         }
-        const{data: authData, error: authError} = await supabase.auth.signInWithOAuth({
+        const{data: authData, error: authError} = await supabase.auth.signInWithIdToken({
             provider: 'google',
-            id_token
-        });
+            token: id_token
+        });        
 
-        if (authError) throw authError;
+        if (authError) {
+            console.error("Error during Google sign-in:", authError);
+            throw authError;
+        }
 
         const user = authData.user;
         if (!user) {
@@ -94,7 +115,7 @@ exports.signInWithGoogle = async (req, res) => {
             .from("profiles")
             .select("*")
             .eq("id", user.id)
-            .single();
+            .maybeSingle();
 
         if (profileError) throw profileError;
 
@@ -109,13 +130,18 @@ exports.signInWithGoogle = async (req, res) => {
 
             if (insertError) throw insertError;
         }
+        let existNumber = false;
 
-        const numberExists = !!existingProfile.phone_number;
+        if (existingProfile && existingProfile.phone_number !== null) {
+            existNumber = true;
+        }
 
         res.status(200).json({ 
             message: "User signed in successfully.",
             user: authData.user,
-            numberExists
+            token: authData.session.access_token,
+            refreshToken: authData.session.refresh_token,
+            existNumber
         });
     } catch (error) {
         console.error("Error signing in with Google:", error);
@@ -125,10 +151,11 @@ exports.signInWithGoogle = async (req, res) => {
 
 exports.addNumberAndRole = async (req, res) => {
     try{
-        const { userId, phone_number, role } = req.body;
+        const userId = req.user.id;
+        const { phone_number, role } = req.body;
 
         // Validate input
-        if (!userId || !number || !role) {
+        if (!phone_number || !role) {
             return res.status(400).json({ error: "All fields are required" });
         }
 
@@ -136,9 +163,13 @@ exports.addNumberAndRole = async (req, res) => {
         const { data, error } = await supabase
             .from("profiles")
             .update({ phone_number, role })
-            .eq("id", userId);
-
-        if (error) throw error;
+            .eq("id", userId)
+            .select();
+        
+        if (error) {
+            console.error("Error updating profile:", error);
+            throw error;
+        }
 
         res.status(200).json({ message: "Number and role added successfully.", data });
     }catch(error){

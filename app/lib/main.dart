@@ -6,6 +6,7 @@ import 'package:app/screen/splash/splash_screen.dart';
 import 'package:app/services/language_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
@@ -87,5 +88,36 @@ class MyApp extends StatelessWidget {
         },
       ),
     ],
+    redirect: (context, state) async {
+      const storage = FlutterSecureStorage();
+      final token = await storage.read(key: 'token');
+      final existNumber = await storage.read(key: 'existNumber');
+
+      final bool isLoggedIn = token != null;
+      final String currentPath = state.matchedLocation;
+      final isPublicRoute =
+          currentPath == '/login' ||
+          currentPath == '/register' ||
+          currentPath == '/splash';
+
+      final bool hasCompletedOnboarding =
+          existNumber != null && existNumber != 'false';
+
+      if (isLoggedIn && isPublicRoute) {
+        return '/home';
+      }
+
+      if (!isLoggedIn && !isPublicRoute) {
+        return '/login';
+      }
+
+      if (isLoggedIn &&
+          !hasCompletedOnboarding &&
+          currentPath != '/addnumberandrole') {
+        return '/addnumberandrole';
+      }
+      
+      return null;
+    },
   );
 }
