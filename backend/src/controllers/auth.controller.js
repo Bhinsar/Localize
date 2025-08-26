@@ -68,8 +68,22 @@ exports.loginUser = async (req, res) => {
         if (profileData.phone_number !== null) {
             existNumber = true;
         }
+        let bios = false
+        if(profileData.role == "provider") {
+            const {data: providerData, error: providerError} = await supabase
+                .from("provider_details")
+                .select("*")
+                .eq("user_id", profileData.id)
+                .single();
 
-        res.status(200).json({ user:data, token, refreshToken, existNumber, role });
+            if (providerError) {
+                console.error("Error fetching provider details:", providerError);
+            } else {
+                bios = providerData ? true : false;
+            }
+        }
+
+        res.status(200).json({ user:data, token, refreshToken, existNumber, role, bios });
     } catch (error) {
         console.error("Error logging in user:", error);
         res.status(500).json({ error: "Internal Server Error" });
@@ -93,6 +107,7 @@ exports.refreshToken = async (req, res) => {
 
 exports.signInWithGoogle = async (req, res) => {
     try{
+        console.log("Signing in with Google...");
         const { id_token } = req.body;
         if(!id_token) {
             return res.status(400).json({ error: "ID token is required" });
@@ -139,13 +154,30 @@ exports.signInWithGoogle = async (req, res) => {
             role = existingProfile.role;
         }
 
+        let bios = false;
+
+        if (existingProfile && existingProfile.role === "provider") {
+            const { data: providerData, error: providerError } = await supabase
+                .from("provider_details")
+                .select("*")
+                .eq("user_id", existingProfile.id)
+                .single();
+
+            if (providerError) {
+                console.error("Error fetching provider details:", providerError);
+            } else {
+                bios = providerData ? true : false;
+            }
+        }
+
         res.status(200).json({ 
             message: "User signed in successfully.",
             user: authData.user,
             token: authData.session.access_token,
             refreshToken: authData.session.refresh_token,
             existNumber,
-            role
+            role,
+            bios
         });
     } catch (error) {
         console.error("Error signing in with Google:", error);
@@ -176,7 +208,7 @@ exports.addNumberAndRole = async (req, res) => {
         // Add number and role to the user's profile
         const { data, error } = await supabase
             .from("profiles")
-            .update({ phone_number, role })
+            .update({ phone_number: "+91" + phone_number, role })
             .eq("id", userId)
             .select();
         

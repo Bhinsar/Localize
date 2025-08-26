@@ -38,7 +38,11 @@ class _NumberAndRoleState extends State<NumberAndRole> {
         if (response['error'] != null) {
           throw Exception(response['error']);
         }
-        context.go('/${_selectedRole}/home');
+        if (_selectedRole == "client") {
+          context.go('/client/home');
+        } else {
+          context.go('/provider/bios');
+        }
       } else {
         SnackbarUtils.showError(context, l10.somethingWentWrongPlease);
       }

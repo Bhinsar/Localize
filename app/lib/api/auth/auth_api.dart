@@ -29,16 +29,17 @@ class AuthApi {
           key: 'role',
           value: response.data['role'] ?? 'client',
         );
+        await _storage.write(
+          key: 'bios',
+          value: response.data['bios'].toString(),
+        );
         return response.data;
-      } 
+      }
       throw Exception('Failed to login');
-      
     } on DioException catch (e) {
       if (e.response != null) {
         if (e.response?.statusCode == 400 || e.response?.statusCode == 401) {
-          return {
-            'error': e.response?.data['error'] ?? 'Invalid credentials',
-          };
+          return {'error': e.response?.data['error'] ?? 'Invalid credentials'};
         }
       }
       print('Login error: $e');
@@ -57,13 +58,16 @@ class AuthApi {
         data: {'email': email, 'password': password, 'full_name': fullName},
       );
       if (response.statusCode == 201) {
-         _storage.write(key: 'token', value: response.data['token']);
+        _storage.write(key: 'token', value: response.data['token']);
         _storage.write(
           key: 'refresh_token',
           value: response.data['refreshToken'],
         );
         await _storage.write(key: 'existNumber', value: 'false');
-        await _storage.write(key: 'role', value: response.data['role'] ?? 'client');
+        await _storage.write(
+          key: 'role',
+          value: response.data['role'] ?? 'client',
+        );
         return response.data;
       }
       throw Exception('Failed to register');
@@ -114,6 +118,14 @@ class AuthApi {
           key: 'existNumber',
           value: response.data['existNumber'].toString(),
         );
+        await _storage.write(
+          key: 'role',
+          value: response.data['role'].toString(),
+        );
+        await _storage.write(
+          key: 'bios',
+          value: response.data['bios'].toString(),
+        );
 
         return response.data;
       } else {
@@ -136,10 +148,7 @@ class AuthApi {
         data: {'phone_number': number, 'role': role},
       );
       if (response.statusCode == 200) {
-        await _storage.write(
-          key: 'existNumber',
-          value: 'true',
-        );
+        await _storage.write(key: 'existNumber', value: 'true');
         await _storage.write(key: 'role', value: role);
         return response.data;
       } else {

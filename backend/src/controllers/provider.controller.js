@@ -10,11 +10,6 @@ exports.registerProvider = async (req, res) => {
         return res.status(400).json({ error: "All fields are required." });
     }
 
-    const {error:{updatedUserError}} = await supabase
-        .from("profiles")
-        .update({ role: "provider" })
-        .eq("user_id", id)
-
     if (updatedUserError) {
         return res.status(500).json({ error: "Failed to update user profile." });
     }

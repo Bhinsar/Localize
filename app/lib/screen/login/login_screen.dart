@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:app/api/auth/auth_api.dart';
 import 'package:app/widgets/snackbar_utils.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -20,6 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _authApi = AuthApi();
   bool _isLoading = false;
   bool _isGoogleLogin = false;
+  final _storage = const FlutterSecureStorage();
 
   @override
   void dispose() {
@@ -28,7 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  Future<void> _login(l10) async {
+  Future<void> _login(AppLocalizations l10) async {
     try {
       setState(() {
         _isLoading = true;
@@ -40,8 +42,27 @@ class _LoginScreenState extends State<LoginScreen> {
         _emailController.text,
         _passwordController.text,
       );
-      if (response != null) {
-        context.go('/home');
+      if (response != null && response.containsKey('role')) {
+        final role = response['role'];
+        final existNumber = await _storage.read(key: 'existNumber');
+        final bios = await _storage.read(key: 'bios');
+        final bool hasCompletedOnboarding = existNumber != null && existNumber != 'false';
+        final bool hasCompletedBios = bios != null && bios != 'false';
+
+        // Check onboarding status first
+        if (!hasCompletedOnboarding) {
+          context.go('/addnumberandrole');
+          return;
+        }
+
+        // Route based on role and bios status
+        if (role == 'client') {
+          context.go('/client/home');
+        } else if (role == 'provider') {
+          context.go(hasCompletedBios ? '/provider/bios' : '/provider/home');
+        } else {
+          throw Exception('Unknown user role');
+        }
       } else {
         throw Exception('Login failed');
       }
@@ -55,19 +76,38 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  Future<void> _loginWithGoogle(l10) async {
+  Future<void> _loginWithGoogle(AppLocalizations l10) async {
     try {
       setState(() {
         _isGoogleLogin = true;
       });
       final response = await _authApi.loginWithGoogle();
-      if (response != null) {
-        context.go('/home');
-      }else {
+      if (response != null && response.containsKey('role')) {
+        final role = response['role'];
+        final existNumber = await _storage.read(key: 'existNumber');
+        final bios = await _storage.read(key: 'bios');
+        final bool hasCompletedOnboarding = existNumber != null && existNumber != 'false';
+        final bool hasCompletedBios = bios != null && bios != 'false';
+
+        // Check onboarding status first
+        if (!hasCompletedOnboarding) {
+          context.go('/addnumberandrole');
+          return;
+        }
+
+        // Route based on role and bios status
+        if (role == 'client') {
+          context.go('/client/home');
+        } else if (role == 'provider') {
+          context.go(hasCompletedBios ? '/provider/bios' : '/provider/home');
+        } else {
+          throw Exception('Unknown user role');
+        }
+      } else {
         throw Exception('Google login failed');
       }
     } catch (e) {
-      print('Login error: $e');
+      print('Google login error: $e');
       SnackbarUtils.showError(context, l10.somethingWentWrongPlease);
     } finally {
       setState(() {
@@ -170,24 +210,24 @@ class _LoginScreenState extends State<LoginScreen> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: TextButton(
-                        onPressed: () {
-                          _loginWithGoogle(l10);
-                        },
-                        child:_isGoogleLogin ? CircularProgressIndicator(color: Colors.white, ) : Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              'assets/images/google_logo.png',
-                              width: d.width20,
-                              height: d.height20,
-                            ),
-                            SizedBox(width: d.width10),
-                            Text(
-                              l10.loginWithGoogle,
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ],
-                        ),
+                        onPressed: () => _loginWithGoogle(l10),
+                        child: _isGoogleLogin
+                            ? CircularProgressIndicator(color: Colors.white)
+                            : Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.asset(
+                                    'assets/images/google_logo.png',
+                                    width: d.width20,
+                                    height: d.height20,
+                                  ),
+                                  SizedBox(width: d.width10),
+                                  Text(
+                                    l10.loginWithGoogle,
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ],
+                              ),
                       ),
                     ),
                   ],

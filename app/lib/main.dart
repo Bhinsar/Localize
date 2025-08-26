@@ -1,7 +1,7 @@
-import 'dart:math';
 import 'dart:ui';
 import 'package:app/screen/client_screen/home/home_screen.dart';
 import 'package:app/screen/login/login_screen.dart';
+import 'package:app/screen/provider_screen/bios_screen/bios_screen.dart';
 import 'package:app/screen/provider_screen/home/home_screen.dart';
 import 'package:app/screen/register/number_and_role.dart';
 import 'package:app/screen/splash/splash_screen.dart';
@@ -28,10 +28,8 @@ Future<void> main() async {
   if (storedLanguageCode == null) {
     await languageService.setLanguageCode(languageCode);
   } else {
-    // Use the stored language code if it exists
     await languageService.setLanguageCode(storedLanguageCode);
   }
-  await languageService.setLanguageCode(languageCode);
   runApp(
     ChangeNotifierProvider(
       create: (context) => LocaleProvider()..initializeLocale(),
@@ -61,39 +59,31 @@ class MyApp extends StatelessWidget {
     routes: [
       GoRoute(
         path: "/splash",
-        builder: (context, state) {
-          return const SplashScreen();
-        },
+        builder: (context, state) => const SplashScreen(),
       ),
       GoRoute(
         path: "/login",
-        builder: (context, state) {
-          return const LoginScreen();
-        },
+        builder: (context, state) => const LoginScreen(),
       ),
       GoRoute(
         path: "/register",
-        builder: (context, state) {
-          return const RegisterScreen();
-        },
+        builder: (context, state) => const RegisterScreen(),
       ),
       GoRoute(
         path: "/addnumberandrole",
-        builder: (context, state) {
-          return const NumberAndRole();
-        },
+        builder: (context, state) => const NumberAndRole(),
       ),
       GoRoute(
         path: "/client/home",
-        builder: (context, state) {
-          return const HomeScreen();
-        },
+        builder: (context, state) => const HomeScreen(),
       ),
       GoRoute(
         path: "/provider/home",
-        builder: (context, state) {
-          return const ProviderHomeScreen();
-        },
+        builder: (context, state) => const ProviderHomeScreen(),
+      ),
+      GoRoute(
+        path: "/provider/bios",
+        builder: (context, state) => const BiosScreen(),
       ),
     ],
     redirect: (context, state) async {
@@ -101,30 +91,54 @@ class MyApp extends StatelessWidget {
       final token = await storage.read(key: 'token');
       final existNumber = await storage.read(key: 'existNumber');
       final role = await storage.read(key: 'role');
+      final bios = await storage.read(key: 'bios');
+      final currentPath = state.matchedLocation;
+
+      final bool isPublicRoute = [
+        '/login',
+        '/register',
+        '/splash',
+      ].contains(currentPath);
+
+      final bool isClientRoute = currentPath.startsWith('/client');
+      final bool isProviderRoute = currentPath.startsWith('/provider');
 
       final bool isLoggedIn = token != null;
-      final String currentPath = state.matchedLocation;
-      final isPublicRoute =
-          currentPath == '/login' ||
-          currentPath == '/register' ||
-          currentPath == '/splash';
 
-      final bool hasCompletedOnboarding =
-          existNumber != null && existNumber != 'false';
+      final bool hasCompletedOnboarding = existNumber != null && existNumber != 'false';
 
-      if (isLoggedIn && isPublicRoute) {
-        if (role == 'provider') return '/provider/home';
-        if (role == 'client') return '/client/home';
-      }
+      final bool hasCompletedBios = bios != null && bios == 'true';
 
       if (!isLoggedIn && !isPublicRoute) {
         return '/login';
       }
 
-      if (isLoggedIn &&
-          !hasCompletedOnboarding &&
-          currentPath != '/addnumberandrole') {
+      if (isLoggedIn && isPublicRoute) {
+        if (!hasCompletedOnboarding) {
+          return '/addnumberandrole';
+        }
+        if (role == 'provider') {
+          return hasCompletedBios ? '/provider/home' : '/provider/bios';
+        }
+        if (role == 'client') {
+          return '/client/home';
+        }
+      }
+
+      if (isLoggedIn && !hasCompletedOnboarding && currentPath != '/addnumberandrole') {
         return '/addnumberandrole';
+      }
+
+      if (isLoggedIn && role == 'provider' && isClientRoute) {
+        return hasCompletedBios ? '/provider/home' : '/provider/bios';
+      }
+
+      if (isLoggedIn && role == 'client' && isProviderRoute) {
+        return '/client/home';
+      }
+
+      if (isLoggedIn && role == 'provider' && isProviderRoute && !hasCompletedBios && currentPath != '/provider/bios') {
+        return '/provider/bios';
       }
 
       return null;
