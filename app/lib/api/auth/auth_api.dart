@@ -25,6 +25,10 @@ class AuthApi {
           key: 'existNumber',
           value: response.data['existNumber'].toString(),
         );
+        await _storage.write(
+          key: 'role',
+          value: response.data['role'] ?? 'client',
+        );
         return response.data;
       } 
       throw Exception('Failed to login');
@@ -52,7 +56,14 @@ class AuthApi {
         '/register',
         data: {'email': email, 'password': password, 'full_name': fullName},
       );
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
+         _storage.write(key: 'token', value: response.data['token']);
+        _storage.write(
+          key: 'refresh_token',
+          value: response.data['refreshToken'],
+        );
+        await _storage.write(key: 'existNumber', value: 'false');
+        await _storage.write(key: 'role', value: response.data['role'] ?? 'client');
         return response.data;
       }
       throw Exception('Failed to register');
@@ -61,7 +72,7 @@ class AuthApi {
         if (e.response?.statusCode == 400) {
           return {
             'error':
-                e.response?.data['message'] ??
+                e.response?.data['error'] ??
                 'User already registered or bad data',
           };
         }
@@ -125,24 +136,32 @@ class AuthApi {
         data: {'phone_number': number, 'role': role},
       );
       if (response.statusCode == 200) {
-        _storage.write(key: 'token', value: response.data['token']);
-        _storage.write(
-          key: 'refresh_token',
-          value: response.data['refreshToken'],
+        await _storage.write(
+          key: 'existNumber',
+          value: 'true',
         );
+        await _storage.write(key: 'role', value: role);
         return response.data;
       } else {
         throw Exception('Failed to add number and role');
       }
-    } catch (e) {
-      print('Add number and role error: $e');
+    } on DioException catch (e) {
+      if (e.response != null) {
+        if (e.response?.statusCode == 400) {
+          return {
+            'error':
+                e.response?.data['error'] ??
+                'something went wrong please try again later',
+          };
+        }
+      }
+      print('Registration error: $e');
       return null;
     }
   }
 
   Future<void> logout() async {
     await _googleSignIn.signOut();
-    await _storage.delete(key: 'token');
-    await _storage.delete(key: 'refresh_token');
+    await _storage.deleteAll();
   }
 }

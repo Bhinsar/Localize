@@ -19,6 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isPasswordVisible = false;
   final _authApi = AuthApi();
   bool _isLoading = false;
+  bool _isGoogleLogin = false;
 
   @override
   void dispose() {
@@ -56,6 +57,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _loginWithGoogle(l10) async {
     try {
+      setState(() {
+        _isGoogleLogin = true;
+      });
       final response = await _authApi.loginWithGoogle();
       if (response != null) {
         context.go('/home');
@@ -65,6 +69,10 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (e) {
       print('Login error: $e');
       SnackbarUtils.showError(context, l10.somethingWentWrongPlease);
+    } finally {
+      setState(() {
+        _isGoogleLogin = false;
+      });
     }
   }
 
@@ -165,7 +173,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: () {
                           _loginWithGoogle(l10);
                         },
-                        child: Row(
+                        child:_isGoogleLogin ? CircularProgressIndicator(color: Colors.white, ) : Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Image.asset(

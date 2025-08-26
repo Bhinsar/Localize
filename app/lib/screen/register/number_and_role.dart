@@ -3,7 +3,6 @@ import 'package:app/l10n/app_localizations.dart';
 import 'package:app/utils/dimensions.dart';
 import 'package:app/widgets/snackbar_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 
 class NumberAndRole extends StatefulWidget {
@@ -20,33 +19,44 @@ class _NumberAndRoleState extends State<NumberAndRole> {
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
   final _authService = AuthApi();
-  // Instantiate storage once as a member variable
-  final _storage = const FlutterSecureStorage();
-
 
   Future<void> _submitForm(AppLocalizations l10) async {
-    // Corrected logic: return if the form is NOT valid
     if (!_formKey.currentState!.validate()) {
       return;
     }
-    
+
     setState(() {
       _isLoading = true;
     });
 
     try {
-      await _authService.addNumberAndRole(
+      final response = await _authService.addNumberAndRole(
         _numberController.text,
         _selectedRole,
       );
-      context.go('/home'); 
+      if (response != null) {
+        if (response['error'] != null) {
+          throw Exception(response['error']);
+        }
+        context.go('/${_selectedRole}/home');
+      } else {
+        SnackbarUtils.showError(context, l10.somethingWentWrongPlease);
+      }
     } catch (e) {
       print("Error on editing number and role: $e");
-        SnackbarUtils.showError(context, e.toString());
+      final errorMessage = e.toString();
+
+      if (errorMessage.contains(
+        'Phone number is already in use by another user',
+      )) {
+        SnackbarUtils.showError(context, l10.phoneNumberAlreadyInUse);
+      } else {
+        SnackbarUtils.showError(context, l10.somethingWentWrongPlease);
+      }
     } finally {
-        setState(() {
-          _isLoading = false;
-        });
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -99,7 +109,9 @@ class _NumberAndRoleState extends State<NumberAndRole> {
                         return l10.pleaseEnterPhoneNumber;
                       }
                       // Basic validation for digits only
-                      if (!RegExp(r'^\+?[0-9]{10,}$').hasMatch(value)) {
+                      if (!RegExp(r'^\+?[0-9]{10,}$').hasMatch(value) ||
+                          value.length < 10 ||
+                          value.length > 10) {
                         return l10.pleaseEnterValidNumber;
                       }
                       return null;
@@ -113,7 +125,7 @@ class _NumberAndRoleState extends State<NumberAndRole> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0),
                       ),
-                       focusedBorder: OutlineInputBorder(
+                      focusedBorder: OutlineInputBorder(
                         borderSide: const BorderSide(
                           color: Color.fromARGB(255, 21, 61, 22),
                           width: 2.0,
@@ -148,16 +160,22 @@ class _NumberAndRoleState extends State<NumberAndRole> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color.fromARGB(255, 21, 61, 22),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0)
-                        )
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
                       ),
                       child: _isLoading
                           ? const SizedBox(
                               width: 20,
                               height: 20,
                               child: CircularProgressIndicator(
-                                  color: Colors.white, strokeWidth: 2))
-                          : Text(l10.submit, style: const TextStyle(color: Colors.white)),
+                                color: Colors.white,
+                                strokeWidth: 2,
+                              ),
+                            )
+                          : Text(
+                              l10.submit,
+                              style: const TextStyle(color: Colors.white),
+                            ),
                     ),
                   ),
                 ],

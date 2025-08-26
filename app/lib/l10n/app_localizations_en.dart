@@ -99,4 +99,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get submit => 'Submit';
+
+  @override
+  String get phoneNumberAlreadyInUse =>
+      'Phone number is already in use by another user';
 }

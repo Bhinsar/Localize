@@ -29,5 +29,6 @@
   "client": "Client",
   "provider": "Provider",
   "somethingWentWrongPlease": "Something went wrong please try again",
-  "submit": "Submit"
+  "submit": "Submit",
+  "phoneNumberAlreadyInUse": "Phone number is already in use by another user"
 }

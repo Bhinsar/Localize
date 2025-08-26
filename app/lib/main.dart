@@ -1,6 +1,8 @@
+import 'dart:math';
 import 'dart:ui';
-import 'package:app/screen/home/home_screen.dart';
+import 'package:app/screen/client_screen/home/home_screen.dart';
 import 'package:app/screen/login/login_screen.dart';
+import 'package:app/screen/provider_screen/home/home_screen.dart';
 import 'package:app/screen/register/number_and_role.dart';
 import 'package:app/screen/splash/splash_screen.dart';
 import 'package:app/services/language_service.dart';
@@ -82,9 +84,15 @@ class MyApp extends StatelessWidget {
         },
       ),
       GoRoute(
-        path: "/home",
+        path: "/client/home",
         builder: (context, state) {
           return const HomeScreen();
+        },
+      ),
+      GoRoute(
+        path: "/provider/home",
+        builder: (context, state) {
+          return const ProviderHomeScreen();
         },
       ),
     ],
@@ -92,6 +100,7 @@ class MyApp extends StatelessWidget {
       const storage = FlutterSecureStorage();
       final token = await storage.read(key: 'token');
       final existNumber = await storage.read(key: 'existNumber');
+      final role = await storage.read(key: 'role');
 
       final bool isLoggedIn = token != null;
       final String currentPath = state.matchedLocation;
@@ -104,7 +113,8 @@ class MyApp extends StatelessWidget {
           existNumber != null && existNumber != 'false';
 
       if (isLoggedIn && isPublicRoute) {
-        return '/home';
+        if (role == 'provider') return '/provider/home';
+        if (role == 'client') return '/client/home';
       }
 
       if (!isLoggedIn && !isPublicRoute) {
@@ -116,7 +126,7 @@ class MyApp extends StatelessWidget {
           currentPath != '/addnumberandrole') {
         return '/addnumberandrole';
       }
-      
+
       return null;
     },
   );

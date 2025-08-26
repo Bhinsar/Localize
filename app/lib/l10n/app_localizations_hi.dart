@@ -100,4 +100,8 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get submit => 'जमा करें';
+
+  @override
+  String get phoneNumberAlreadyInUse =>
+      'फोन नंबर पहले से किसी अन्य उपयोगकर्ता द्वारा उपयोग में है';
 }

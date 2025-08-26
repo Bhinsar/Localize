@@ -54,7 +54,7 @@ exports.loginUser = async (req, res) => {
 
         const { data: profileData, error: profileError } = await supabase
             .from("profiles")
-            .select("phone_number")
+            .select("*")
             .eq("id", data.user.id)
             .single();
 
@@ -63,12 +63,13 @@ exports.loginUser = async (req, res) => {
         }
 
         let existNumber = false;
+        let role = profileData.role || null;
 
         if (profileData.phone_number !== null) {
             existNumber = true;
         }
 
-        res.status(200).json({ user:data, token, refreshToken, existNumber });
+        res.status(200).json({ user:data, token, refreshToken, existNumber, role });
     } catch (error) {
         console.error("Error logging in user:", error);
         res.status(500).json({ error: "Internal Server Error" });
@@ -131,9 +132,11 @@ exports.signInWithGoogle = async (req, res) => {
             if (insertError) throw insertError;
         }
         let existNumber = false;
+        let role = null;
 
         if (existingProfile && existingProfile.phone_number !== null) {
             existNumber = true;
+            role = existingProfile.role;
         }
 
         res.status(200).json({ 
@@ -141,7 +144,8 @@ exports.signInWithGoogle = async (req, res) => {
             user: authData.user,
             token: authData.session.access_token,
             refreshToken: authData.session.refresh_token,
-            existNumber
+            existNumber,
+            role
         });
     } catch (error) {
         console.error("Error signing in with Google:", error);
@@ -159,6 +163,16 @@ exports.addNumberAndRole = async (req, res) => {
             return res.status(400).json({ error: "All fields are required" });
         }
 
+        const {data: existingProfile} = await supabase
+            .from("profiles")
+            .select("*")
+            .eq("phone_number", phone_number)
+            .maybeSingle();
+        
+        if(existingProfile && existingProfile.id !== userId){
+            return res.status(400).json({ error: "Phone number is already in use by another user" });
+        }
+
         // Add number and role to the user's profile
         const { data, error } = await supabase
             .from("profiles")
@@ -169,7 +183,7 @@ exports.addNumberAndRole = async (req, res) => {
         if (error) {
             console.error("Error updating profile:", error);
             throw error;
-        }
+        }        
 
         res.status(200).json({ message: "Number and role added successfully.", data });
     }catch(error){

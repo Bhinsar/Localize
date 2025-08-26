@@ -277,6 +277,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Submit'**
   String get submit;
+
+  /// No description provided for @phoneNumberAlreadyInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number is already in use by another user'**
+  String get phoneNumberAlreadyInUse;
 }
 
 class _AppLocalizationsDelegate
