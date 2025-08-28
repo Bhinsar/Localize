@@ -16,21 +16,23 @@ class GeoLocation {
 }
 
 class ProviderDetails {
-  final int id;
-  final String userId;
-  final String bio;
-  final double hourlyRate;
-  final String status;
-  final Map<String, dynamic>? availabilitySchedule;
-  final GeoLocation? location;
-  final Services? service;
+  int? id;
+  String? userId;
+  String? bio;
+  double? price;
+  String? price_unit;
+  String? status;
+  Map<String, dynamic>? availabilitySchedule;
+  GeoLocation? location;
+  Services? service;
 
   ProviderDetails({
-    required this.id,
-    required this.userId,
-    required this.bio,
-    required this.hourlyRate,
-    required this.status,
+    this.id,
+     this.userId,
+     this.bio,
+     this.price,
+     this.price_unit,
+     this.status,
     this.availabilitySchedule,
     this.location,
     this.service,
@@ -41,7 +43,8 @@ class ProviderDetails {
       id: json['id'],
       userId: json['user_id'],
       bio: json['bio'],
-      hourlyRate: (json['hourly_rate'] as num).toDouble(),
+      price: (json['price'] as num).toDouble(),
+      price_unit: json['price_unit'] ?? 'hourly',
       status: json['status'] ?? 'active',
       availabilitySchedule: json['availability_schedule'],
       
@@ -61,14 +64,11 @@ class ProviderDetails {
       'id': id,
       'user_id': userId,
       'bio': bio,
-      'hourly_rate': hourlyRate,
+      'price': price,
+      'price_unit': price_unit,
       'status': status,
       'availability_schedule': availabilitySchedule,
-      // For updates, you would typically only send the service_id
-      'service_id': service?.id, 
-      // Location would need to be converted to a format PostGIS understands,
-      // e.g., 'SRID=4326;POINT(longitude latitude)'
-      // This part depends on your backend/API requirements.
+      'service_id': service?.id,
     };
   }
 }

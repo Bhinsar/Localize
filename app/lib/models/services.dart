@@ -1,12 +1,12 @@
 class Services {
-  final String id;
-  final String name;
-  final String category;
+   String? id;
+   String? name;
+   String? category;
 
   Services({
-    required this.id,
-    required this.name,
-    required this.category,
+    this.id,
+    this.name,
+    this.category,
   });
 
   factory Services.fromJson(Map<String, dynamic> json) {
