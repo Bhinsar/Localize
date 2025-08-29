@@ -73,7 +73,7 @@ class _BiosScreenState extends State<BiosScreen> {
               LinearProgressIndicator(
                 value: (currentPage+1) / _pages.length,
                 backgroundColor: Colors.grey[300],
-                color: Colors.green,
+                color: const Color.fromARGB(255, 50, 116, 52),
               ),
               SizedBox(height: d.height10/2),
               Row(
@@ -84,7 +84,7 @@ class _BiosScreenState extends State<BiosScreen> {
                       padding: EdgeInsets.all(5.0),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: currentPage < i+1 ? const Color.fromARGB(255, 197, 197, 197) : Colors.green,
+                        color: currentPage < i+1 ? const Color.fromARGB(255, 197, 197, 197) : Color.fromARGB(255, 50, 116, 52),
                       ),
                       child: Icon(
                         currentPage < i+1
@@ -109,7 +109,7 @@ class _BiosScreenState extends State<BiosScreen> {
               Row(
                 children: [
                   ElevatedButton(
-                    child: const Text("Back"),
+                    child: Text("Back", style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),),
                     onPressed: currentPage > 0
                         ? () {
                             pageController.previousPage(
@@ -121,7 +121,7 @@ class _BiosScreenState extends State<BiosScreen> {
                   ),
                   const Spacer(),
                   ElevatedButton(
-                    child: currentPage < _pages.length - 1 ? const Text("Next") : const Text("Finish"),
+                    child: currentPage < _pages.length - 1 ? Text("Next", style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),) : Text("Finish", style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color), ),
                     onPressed: currentPage < _pages.length - 1
                         ? () {
                             pageController.nextPage(

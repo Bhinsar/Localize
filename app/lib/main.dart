@@ -49,7 +49,16 @@ class MyApp extends StatelessWidget {
       locale: provider.locale,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      theme: ThemeData(primarySwatch: Colors.green),
+      theme: ThemeData(
+        primarySwatch: Colors.green,
+        textTheme: TextTheme(
+          bodyLarge: TextStyle(color: Colors.green.shade900),
+          bodyMedium: TextStyle(color: Colors.green.shade800),
+          headlineLarge: TextStyle(color: Colors.green.shade700),
+          headlineMedium: TextStyle(color: Colors.green.shade600),
+          headlineSmall: TextStyle(color: Colors.green.shade500),
+        ),
+      ),
       routerConfig: _router,
     );
   }
@@ -61,10 +70,7 @@ class MyApp extends StatelessWidget {
         path: "/splash",
         builder: (context, state) => const SplashScreen(),
       ),
-      GoRoute(
-        path: "/login",
-        builder: (context, state) => const LoginScreen(),
-      ),
+      GoRoute(path: "/login", builder: (context, state) => const LoginScreen()),
       GoRoute(
         path: "/register",
         builder: (context, state) => const RegisterScreen(),
@@ -105,7 +111,8 @@ class MyApp extends StatelessWidget {
 
       final bool isLoggedIn = token != null;
 
-      final bool hasCompletedOnboarding = existNumber != null && existNumber != 'false';
+      final bool hasCompletedOnboarding =
+          existNumber != null && existNumber != 'false';
 
       final bool hasCompletedBios = bios != null && bios == 'true';
 
@@ -125,7 +132,9 @@ class MyApp extends StatelessWidget {
         }
       }
 
-      if (isLoggedIn && !hasCompletedOnboarding && currentPath != '/addnumberandrole') {
+      if (isLoggedIn &&
+          !hasCompletedOnboarding &&
+          currentPath != '/addnumberandrole') {
         return '/addnumberandrole';
       }
 
@@ -137,7 +146,11 @@ class MyApp extends StatelessWidget {
         return '/client/home';
       }
 
-      if (isLoggedIn && role == 'provider' && isProviderRoute && !hasCompletedBios && currentPath != '/provider/bios') {
+      if (isLoggedIn &&
+          role == 'provider' &&
+          isProviderRoute &&
+          !hasCompletedBios &&
+          currentPath != '/provider/bios') {
         return '/provider/bios';
       }
 

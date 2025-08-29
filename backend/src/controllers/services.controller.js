@@ -1,4 +1,5 @@
 const {supabase} = require("../utils/supabase");
+const { translateJsonData } = require("../utils/translateJsonData");
 
 exports.addServices = async (req, res) => {
     try{
@@ -29,10 +30,21 @@ exports.addServices = async (req, res) => {
 
 exports.getServices = async (req, res) => {
     try {
+        const {language} = req.headers;
+        console.log("Requested language:", language);
         const { data, error } = await supabase
             .from("services")
             .select("*");
-
+         if (language && language.toLowerCase() !== 'en' && language.toLowerCase() !== 'english') {
+            try {
+                // Await the translation
+                const translatedData = await translateJsonData(data, language);
+                return res.status(200).json({ services: translatedData });
+            } catch (translationError) {
+                console.error("Translation failed, returning original data.", translationError);
+                return res.status(200).json({ services: data });
+            }
+        }
         if (error) {
             return res.status(500).json({ error: "Failed to retrieve services." });
         }

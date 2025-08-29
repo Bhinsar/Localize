@@ -103,4 +103,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get phoneNumberAlreadyInUse =>
       'Phone number is already in use by another user';
+
+  @override
+  String get whatservicedoyouprovide => 'What service do you provide?';
+
+  @override
+  String get selectThePrimaryServiceYouWantToOfferToCustomers =>
+      'Select the primary service you want to offer to customers';
 }

@@ -30,5 +30,7 @@
   "pleaseEnterValidNumber": "कृपया एक मान्य संख्या दर्ज करें",
   "somethingWentWrongPlease": "कुछ गलत हो गया कृपया पुनः प्रयास करें",
   "submit": "जमा करें",
-  "phoneNumberAlreadyInUse": "फोन नंबर पहले से किसी अन्य उपयोगकर्ता द्वारा उपयोग में है"
+  "phoneNumberAlreadyInUse": "फोन नंबर पहले से किसी अन्य उपयोगकर्ता द्वारा उपयोग में है",
+  "whatservicedoyouprovide": "आप कौन सी सेवा प्रदान करते हैं?",
+  "selectThePrimaryServiceYouWantToOfferToCustomers": "ग्राहकों को पेश करने के लिए आप कौन सी प्राथमिक सेवा चुनना चाहेंगे?"
 }

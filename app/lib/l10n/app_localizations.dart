@@ -283,6 +283,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Phone number is already in use by another user'**
   String get phoneNumberAlreadyInUse;
+
+  /// No description provided for @whatservicedoyouprovide.
+  ///
+  /// In en, this message translates to:
+  /// **'What service do you provide?'**
+  String get whatservicedoyouprovide;
+
+  /// No description provided for @selectThePrimaryServiceYouWantToOfferToCustomers.
+  ///
+  /// In en, this message translates to:
+  /// **'Select the primary service you want to offer to customers'**
+  String get selectThePrimaryServiceYouWantToOfferToCustomers;
 }
 
 class _AppLocalizationsDelegate

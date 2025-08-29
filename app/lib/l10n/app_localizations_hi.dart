@@ -104,4 +104,11 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get phoneNumberAlreadyInUse =>
       'फोन नंबर पहले से किसी अन्य उपयोगकर्ता द्वारा उपयोग में है';
+
+  @override
+  String get whatservicedoyouprovide => 'आप कौन सी सेवा प्रदान करते हैं?';
+
+  @override
+  String get selectThePrimaryServiceYouWantToOfferToCustomers =>
+      'ग्राहकों को पेश करने के लिए आप कौन सी प्राथमिक सेवा चुनना चाहेंगे?';
 }

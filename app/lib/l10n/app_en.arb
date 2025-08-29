@@ -30,5 +30,7 @@
   "provider": "Provider",
   "somethingWentWrongPlease": "Something went wrong please try again",
   "submit": "Submit",
-  "phoneNumberAlreadyInUse": "Phone number is already in use by another user"
+  "phoneNumberAlreadyInUse": "Phone number is already in use by another user",
+  "whatservicedoyouprovide": "What service do you provide?",
+  "selectThePrimaryServiceYouWantToOfferToCustomers": "Select the primary service you want to offer to customers"
 }

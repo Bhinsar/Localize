@@ -24,18 +24,18 @@ class ProviderDetails {
   String? status;
   Map<String, dynamic>? availabilitySchedule;
   GeoLocation? location;
-  Services? service;
+  String? service_id;
 
   ProviderDetails({
     this.id,
-     this.userId,
-     this.bio,
-     this.price,
-     this.price_unit,
-     this.status,
+    this.userId,
+    this.bio,
+    this.price,
+    this.price_unit,
+    this.status,
     this.availabilitySchedule,
     this.location,
-    this.service,
+    this.service_id,
   });
 
   factory ProviderDetails.fromJson(Map<String, dynamic> json) {
@@ -47,14 +47,12 @@ class ProviderDetails {
       price_unit: json['price_unit'] ?? 'hourly',
       status: json['status'] ?? 'active',
       availabilitySchedule: json['availability_schedule'],
-      
+
       location: json['location'] != null
           ? GeoLocation.fromJson(json['location'])
           : null,
-          
-      service: json['services'] != null
-          ? Services.fromJson(json['services'])
-          : null,
+
+      service_id: json['services'] != null ? json['services'].toString() : null,
     );
   }
 
@@ -68,7 +66,7 @@ class ProviderDetails {
       'price_unit': price_unit,
       'status': status,
       'availability_schedule': availabilitySchedule,
-      'service_id': service?.id,
+      'service_id': service_id,
     };
   }
 }
