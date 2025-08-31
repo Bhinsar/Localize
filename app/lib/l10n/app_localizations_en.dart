@@ -110,4 +110,31 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get selectThePrimaryServiceYouWantToOfferToCustomers =>
       'Select the primary service you want to offer to customers';
+
+  @override
+  String get pleaseEnterServiceName => 'Please enter service name';
+
+  @override
+  String get pleaseSelectAService => 'Please select a service';
+
+  @override
+  String get formSubmitted => 'Form submitted successfully';
+
+  @override
+  String get pleaseCompleteTheForm => 'Please complete the form';
+
+  @override
+  String get next => 'Next';
+
+  @override
+  String get finish => 'Finish';
+
+  @override
+  String get back => 'Back';
+
+  @override
+  String get tellUsAboutYourself => 'Tell us about yourself';
+
+  @override
+  String get thisfieldcannotbeempty => 'This field cannot be empty';
 }

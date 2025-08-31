@@ -46,7 +46,8 @@ class _LoginScreenState extends State<LoginScreen> {
         final role = response['role'];
         final existNumber = await _storage.read(key: 'existNumber');
         final bios = await _storage.read(key: 'bios');
-        final bool hasCompletedOnboarding = existNumber != null && existNumber != 'false';
+        final bool hasCompletedOnboarding =
+            existNumber != null && existNumber != 'false';
         final bool hasCompletedBios = bios != null && bios != 'false';
 
         // Check onboarding status first
@@ -86,7 +87,8 @@ class _LoginScreenState extends State<LoginScreen> {
         final role = response['role'];
         final existNumber = await _storage.read(key: 'existNumber');
         final bios = await _storage.read(key: 'bios');
-        final bool hasCompletedOnboarding = existNumber != null && existNumber != 'false';
+        final bool hasCompletedOnboarding =
+            existNumber != null && existNumber != 'false';
         final bool hasCompletedBios = bios != null && bios != 'false';
 
         // Check onboarding status first

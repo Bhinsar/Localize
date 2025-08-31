@@ -295,6 +295,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select the primary service you want to offer to customers'**
   String get selectThePrimaryServiceYouWantToOfferToCustomers;
+
+  /// No description provided for @pleaseEnterServiceName.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter service name'**
+  String get pleaseEnterServiceName;
+
+  /// No description provided for @pleaseSelectAService.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a service'**
+  String get pleaseSelectAService;
+
+  /// No description provided for @formSubmitted.
+  ///
+  /// In en, this message translates to:
+  /// **'Form submitted successfully'**
+  String get formSubmitted;
+
+  /// No description provided for @pleaseCompleteTheForm.
+  ///
+  /// In en, this message translates to:
+  /// **'Please complete the form'**
+  String get pleaseCompleteTheForm;
+
+  /// No description provided for @next.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get next;
+
+  /// No description provided for @finish.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish'**
+  String get finish;
+
+  /// No description provided for @back.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get back;
+
+  /// No description provided for @tellUsAboutYourself.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us about yourself'**
+  String get tellUsAboutYourself;
+
+  /// No description provided for @thisfieldcannotbeempty.
+  ///
+  /// In en, this message translates to:
+  /// **'This field cannot be empty'**
+  String get thisfieldcannotbeempty;
 }
 
 class _AppLocalizationsDelegate

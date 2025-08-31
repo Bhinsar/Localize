@@ -16,10 +16,11 @@ class BiosScreen extends StatefulWidget {
 }
 
 class _BiosScreenState extends State<BiosScreen> {
-  final pageController = PageController();
-  int currentPage = 0;
+  final _pageController = PageController();
+  int _currentPage = 0;
   final ProviderDetails providerDetails = ProviderDetails();
 
+  // Each key must be attached to a Form widget in the corresponding page.
   final List<GlobalKey<FormState>> _formKeys = [
     GlobalKey<FormState>(),
     GlobalKey<FormState>(),
@@ -42,14 +43,45 @@ class _BiosScreenState extends State<BiosScreen> {
   void initState() {
     super.initState();
     _pages = [
-      ServicesList(data: providerDetails, formKey: _formKeys[0]),
-      Profile(data: providerDetails, formKey: _formKeys[1]),
-      Price(data: providerDetails, formKey: _formKeys[2]),
+      Price(data: providerDetails, formKey: _formKeys[0]),
+      ServicesList(data: providerDetails, formKey: _formKeys[1]),
+      Profile(data: providerDetails, formKey: _formKeys[2]),
       Schedule(data: providerDetails, formKey: _formKeys[3]),
       Address(data: providerDetails, formKey: _formKeys[4])
     ];
   }
-  
+
+  // It's important to dispose of controllers to prevent memory leaks.
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  void _nextPage() {
+    if (_formKeys[_currentPage].currentState?.validate() ?? false) {
+      if (_currentPage < _pages.length - 1) {
+        _pageController.nextPage(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.ease,
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Form submitted successfully!')),
+        );
+      }
+    }
+  }
+
+  void _previousPage() {
+     if (_currentPage > 0) {
+        _pageController.previousPage(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -71,36 +103,53 @@ class _BiosScreenState extends State<BiosScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               LinearProgressIndicator(
-                value: (currentPage+1) / _pages.length,
+                value: (_currentPage + 1) / _pages.length,
                 backgroundColor: Colors.grey[300],
                 color: const Color.fromARGB(255, 50, 116, 52),
+                minHeight: 6,
               ),
-              SizedBox(height: d.height10/2),
+              SizedBox(height: d.height10),
+              // --- IMPROVED PROGRESS ICONS ---
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  for (int i = 0; i < _icons.length; i++)
-                    Container(
-                      padding: EdgeInsets.all(5.0),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: currentPage < i+1 ? const Color.fromARGB(255, 197, 197, 197) : Color.fromARGB(255, 50, 116, 52),
-                      ),
-                      child: Icon(
-                        currentPage < i+1
-                            ? _icons[i]
-                            : Icons.check, color:Colors.white,
-                        size: d.width * 0.05,
-                      ),
-                    )
-                ],
+                children: List.generate(_icons.length, (i) {
+                  Color circleColor;
+                  IconData icon;
+
+                  if (i < _currentPage) {
+                    // Completed Step
+                    circleColor = const Color.fromARGB(255, 50, 116, 52); // Green
+                    icon = Icons.check;
+                  } else if (i == _currentPage) {
+                    // Current Step
+                    circleColor = const Color.fromARGB(255, 50, 116, 52); // Green
+                    icon = _icons[i];
+                  } else {
+                    // Upcoming Step
+                    circleColor = const Color.fromARGB(255, 197, 197, 197); // Grey
+                    icon = _icons[i];
+                  }
+
+                  return Container(
+                    padding: const EdgeInsets.all(5.0),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: circleColor,
+                    ),
+                    child: Icon(
+                      icon,
+                      color: Colors.white,
+                      size: d.width * 0.05,
+                    ),
+                  );
+                }),
               ),
               Expanded(
                 child: PageView(
-                  controller: pageController,
+                  controller: _pageController,
                   onPageChanged: (index) {
                     setState(() {
-                      currentPage = index;
+                      _currentPage = index;
                     });
                   },
                   children: _pages,
@@ -109,27 +158,15 @@ class _BiosScreenState extends State<BiosScreen> {
               Row(
                 children: [
                   ElevatedButton(
-                    child: Text("Back", style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),),
-                    onPressed: currentPage > 0
-                        ? () {
-                            pageController.previousPage(
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeInOut,
-                            );
-                          }
-                        : null,
+                    onPressed: _currentPage > 0 ? _previousPage : null,
+                    child: Text(l10.back, style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),),
                   ),
                   const Spacer(),
                   ElevatedButton(
-                    child: currentPage < _pages.length - 1 ? Text("Next", style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),) : Text("Finish", style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color), ),
-                    onPressed: currentPage < _pages.length - 1
-                        ? () {
-                            pageController.nextPage(
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeInOut,
-                            );
-                          }
-                        : null,
+                    onPressed: _nextPage,
+                    child: _currentPage < _pages.length - 1
+                        ? Text(l10.next, style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),)
+                        : Text(l10.finish, style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),),
                   ),
                 ],
               )

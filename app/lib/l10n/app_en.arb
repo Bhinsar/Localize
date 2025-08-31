@@ -32,5 +32,14 @@
   "submit": "Submit",
   "phoneNumberAlreadyInUse": "Phone number is already in use by another user",
   "whatservicedoyouprovide": "What service do you provide?",
-  "selectThePrimaryServiceYouWantToOfferToCustomers": "Select the primary service you want to offer to customers"
+  "selectThePrimaryServiceYouWantToOfferToCustomers": "Select the primary service you want to offer to customers",
+  "pleaseEnterServiceName": "Please enter service name",
+  "pleaseSelectAService": "Please select a service",
+  "formSubmitted": "Form submitted successfully",
+  "pleaseCompleteTheForm": "Please complete the form",
+  "next": "Next",
+  "finish": "Finish",
+  "back": "Back",
+  "tellUsAboutYourself": "Tell us about yourself",
+  "thisfieldcannotbeempty": "This field cannot be empty"
 }

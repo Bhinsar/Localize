@@ -32,5 +32,14 @@
   "submit": "जमा करें",
   "phoneNumberAlreadyInUse": "फोन नंबर पहले से किसी अन्य उपयोगकर्ता द्वारा उपयोग में है",
   "whatservicedoyouprovide": "आप कौन सी सेवा प्रदान करते हैं?",
-  "selectThePrimaryServiceYouWantToOfferToCustomers": "ग्राहकों को पेश करने के लिए आप कौन सी प्राथमिक सेवा चुनना चाहेंगे?"
+  "selectThePrimaryServiceYouWantToOfferToCustomers": "ग्राहकों को पेश करने के लिए आप कौन सी प्राथमिक सेवा चुनना चाहेंगे?",
+  "pleaseEnterServiceName": "कृपया सेवा का नाम दर्ज करें",
+  "pleaseSelectAService": "कृपया एक सेवा चुनें",
+  "formSubmitted": "फॉर्म सफलतापूर्वक प्रस्तुत किया गया",
+  "pleaseCompleteTheForm": "कृपया फॉर्म पूरा करें",
+  "next": "अगला",
+  "finish": "समाप्त",
+  "back": "वापस",
+  "tellUsAboutYourself": "अपने बारे में बताएं",
+  "thisfieldcannotbeempty": "यह फ़ील्ड खाली नहीं हो सकती"
 }

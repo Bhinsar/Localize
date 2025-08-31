@@ -111,4 +111,31 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get selectThePrimaryServiceYouWantToOfferToCustomers =>
       'ग्राहकों को पेश करने के लिए आप कौन सी प्राथमिक सेवा चुनना चाहेंगे?';
+
+  @override
+  String get pleaseEnterServiceName => 'कृपया सेवा का नाम दर्ज करें';
+
+  @override
+  String get pleaseSelectAService => 'कृपया एक सेवा चुनें';
+
+  @override
+  String get formSubmitted => 'फॉर्म सफलतापूर्वक प्रस्तुत किया गया';
+
+  @override
+  String get pleaseCompleteTheForm => 'कृपया फॉर्म पूरा करें';
+
+  @override
+  String get next => 'अगला';
+
+  @override
+  String get finish => 'समाप्त';
+
+  @override
+  String get back => 'वापस';
+
+  @override
+  String get tellUsAboutYourself => 'अपने बारे में बताएं';
+
+  @override
+  String get thisfieldcannotbeempty => 'यह फ़ील्ड खाली नहीं हो सकती';
 }
