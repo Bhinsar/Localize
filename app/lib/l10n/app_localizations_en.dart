@@ -137,4 +137,78 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get thisfieldcannotbeempty => 'This field cannot be empty';
+
+  @override
+  String get enterPrice => 'Please enter a price';
+
+  @override
+  String get perLiter => 'per Liter';
+
+  @override
+  String get permonth => 'per Month';
+
+  @override
+  String get perHours => 'per Hours';
+
+  @override
+  String get setYourPrice => 'Set your price';
+
+  @override
+  String get pleaseEnterValidPrice => 'Please enter a valid price';
+
+  @override
+  String get setYourAvailability => 'Set your availability';
+
+  @override
+  String get selectDaysYouAreAvailable => 'Select days you are available';
+
+  @override
+  String get sunday => 'Sun';
+
+  @override
+  String get monday => 'Mon';
+
+  @override
+  String get tuesday => 'Tue';
+
+  @override
+  String get wednesday => 'Wed';
+
+  @override
+  String get thursday => 'Thu';
+
+  @override
+  String get friday => 'Fri';
+
+  @override
+  String get saturday => 'Sat';
+
+  @override
+  String get selectTimeSlotYouAreAvailable =>
+      'Select time slot you are available';
+
+  @override
+  String get from => 'From';
+
+  @override
+  String get to => 'To';
+
+  @override
+  String get selectTime => 'Select time';
+
+  @override
+  String get choosethedaysandtimeswhenyoureavailabletoprovideservices =>
+      'Choose the days and times when you\'re available to provide services';
+
+  @override
+  String get pleaseSelectADay => 'Please select a day';
+
+  @override
+  String get pleaseSelectATime => 'Please select a time';
+
+  @override
+  String get chooseTime => 'Choose time';
+
+  @override
+  String get endTimeMustBeAfterStartTime => 'End time must be after start time';
 }

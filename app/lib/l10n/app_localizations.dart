@@ -349,6 +349,150 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This field cannot be empty'**
   String get thisfieldcannotbeempty;
+
+  /// No description provided for @enterPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a price'**
+  String get enterPrice;
+
+  /// No description provided for @perLiter.
+  ///
+  /// In en, this message translates to:
+  /// **'per Liter'**
+  String get perLiter;
+
+  /// No description provided for @permonth.
+  ///
+  /// In en, this message translates to:
+  /// **'per Month'**
+  String get permonth;
+
+  /// No description provided for @perHours.
+  ///
+  /// In en, this message translates to:
+  /// **'per Hours'**
+  String get perHours;
+
+  /// No description provided for @setYourPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Set your price'**
+  String get setYourPrice;
+
+  /// No description provided for @pleaseEnterValidPrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid price'**
+  String get pleaseEnterValidPrice;
+
+  /// No description provided for @setYourAvailability.
+  ///
+  /// In en, this message translates to:
+  /// **'Set your availability'**
+  String get setYourAvailability;
+
+  /// No description provided for @selectDaysYouAreAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Select days you are available'**
+  String get selectDaysYouAreAvailable;
+
+  /// No description provided for @sunday.
+  ///
+  /// In en, this message translates to:
+  /// **'Sun'**
+  String get sunday;
+
+  /// No description provided for @monday.
+  ///
+  /// In en, this message translates to:
+  /// **'Mon'**
+  String get monday;
+
+  /// No description provided for @tuesday.
+  ///
+  /// In en, this message translates to:
+  /// **'Tue'**
+  String get tuesday;
+
+  /// No description provided for @wednesday.
+  ///
+  /// In en, this message translates to:
+  /// **'Wed'**
+  String get wednesday;
+
+  /// No description provided for @thursday.
+  ///
+  /// In en, this message translates to:
+  /// **'Thu'**
+  String get thursday;
+
+  /// No description provided for @friday.
+  ///
+  /// In en, this message translates to:
+  /// **'Fri'**
+  String get friday;
+
+  /// No description provided for @saturday.
+  ///
+  /// In en, this message translates to:
+  /// **'Sat'**
+  String get saturday;
+
+  /// No description provided for @selectTimeSlotYouAreAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Select time slot you are available'**
+  String get selectTimeSlotYouAreAvailable;
+
+  /// No description provided for @from.
+  ///
+  /// In en, this message translates to:
+  /// **'From'**
+  String get from;
+
+  /// No description provided for @to.
+  ///
+  /// In en, this message translates to:
+  /// **'To'**
+  String get to;
+
+  /// No description provided for @selectTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Select time'**
+  String get selectTime;
+
+  /// No description provided for @choosethedaysandtimeswhenyoureavailabletoprovideservices.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the days and times when you\'re available to provide services'**
+  String get choosethedaysandtimeswhenyoureavailabletoprovideservices;
+
+  /// No description provided for @pleaseSelectADay.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a day'**
+  String get pleaseSelectADay;
+
+  /// No description provided for @pleaseSelectATime.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a time'**
+  String get pleaseSelectATime;
+
+  /// No description provided for @chooseTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose time'**
+  String get chooseTime;
+
+  /// No description provided for @endTimeMustBeAfterStartTime.
+  ///
+  /// In en, this message translates to:
+  /// **'End time must be after start time'**
+  String get endTimeMustBeAfterStartTime;
 }
 
 class _AppLocalizationsDelegate

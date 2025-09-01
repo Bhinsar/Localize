@@ -32,7 +32,7 @@ class _BiosScreenState extends State<BiosScreen> {
   final List<IconData> _icons = [
     Icons.camera_roll_sharp,
     Icons.person,
-    Icons.attach_money,
+    Icons.currency_rupee,
     Icons.schedule,
     Icons.location_on
   ];
@@ -43,10 +43,10 @@ class _BiosScreenState extends State<BiosScreen> {
   void initState() {
     super.initState();
     _pages = [
-      Price(data: providerDetails, formKey: _formKeys[0]),
+      Schedule(data: providerDetails, formKey: _formKeys[0]),
       ServicesList(data: providerDetails, formKey: _formKeys[1]),
       Profile(data: providerDetails, formKey: _formKeys[2]),
-      Schedule(data: providerDetails, formKey: _formKeys[3]),
+      Price(data: providerDetails, formKey: _formKeys[3]),
       Address(data: providerDetails, formKey: _formKeys[4])
     ];
   }
@@ -74,14 +74,13 @@ class _BiosScreenState extends State<BiosScreen> {
   }
 
   void _previousPage() {
-     if (_currentPage > 0) {
-        _pageController.previousPage(
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-        );
-      }
+    if (_currentPage > 0) {
+      _pageController.previousPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -109,7 +108,6 @@ class _BiosScreenState extends State<BiosScreen> {
                 minHeight: 6,
               ),
               SizedBox(height: d.height10),
-              // --- IMPROVED PROGRESS ICONS ---
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: List.generate(_icons.length, (i) {
@@ -117,15 +115,12 @@ class _BiosScreenState extends State<BiosScreen> {
                   IconData icon;
 
                   if (i < _currentPage) {
-                    // Completed Step
                     circleColor = const Color.fromARGB(255, 50, 116, 52); // Green
                     icon = Icons.check;
                   } else if (i == _currentPage) {
-                    // Current Step
                     circleColor = const Color.fromARGB(255, 50, 116, 52); // Green
                     icon = _icons[i];
                   } else {
-                    // Upcoming Step
                     circleColor = const Color.fromARGB(255, 197, 197, 197); // Grey
                     icon = _icons[i];
                   }
@@ -147,6 +142,7 @@ class _BiosScreenState extends State<BiosScreen> {
               Expanded(
                 child: PageView(
                   controller: _pageController,
+                  physics: const NeverScrollableScrollPhysics(),
                   onPageChanged: (index) {
                     setState(() {
                       _currentPage = index;
@@ -159,14 +155,28 @@ class _BiosScreenState extends State<BiosScreen> {
                 children: [
                   ElevatedButton(
                     onPressed: _currentPage > 0 ? _previousPage : null,
-                    child: Text(l10.back, style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),),
+                    child: Text(
+                      l10.back,
+                      style: TextStyle(
+                          color: Theme.of(context).textTheme.bodyLarge?.color),
+                    ),
                   ),
                   const Spacer(),
                   ElevatedButton(
                     onPressed: _nextPage,
                     child: _currentPage < _pages.length - 1
-                        ? Text(l10.next, style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),)
-                        : Text(l10.finish, style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color),),
+                        ? Text(
+                            l10.next,
+                            style: TextStyle(
+                                color:
+                                    Theme.of(context).textTheme.bodyLarge?.color),
+                          )
+                        : Text(
+                            l10.finish,
+                            style: TextStyle(
+                                color:
+                                    Theme.of(context).textTheme.bodyLarge?.color),
+                          ),
                   ),
                 ],
               )

@@ -30,7 +30,7 @@ exports.addServices = async (req, res) => {
 
 exports.getServices = async (req, res) => {
     try {
-        const {language} = req.headers;
+        const {language} = req.headers;0
         const { data, error } = await supabase
             .from("services")
             .select("*");

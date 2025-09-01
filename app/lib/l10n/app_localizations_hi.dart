@@ -138,4 +138,79 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get thisfieldcannotbeempty => 'यह फ़ील्ड खाली नहीं हो सकती';
+
+  @override
+  String get enterPrice => 'कृपया एक मूल्य दर्ज करें';
+
+  @override
+  String get perLiter => 'प्रति लीटर';
+
+  @override
+  String get permonth => 'प्रति माह';
+
+  @override
+  String get perHours => 'प्रति घंटा';
+
+  @override
+  String get setYourPrice => 'अपना मूल्य निर्धारित करें';
+
+  @override
+  String get pleaseEnterValidPrice => 'कृपया एक मान्य मूल्य दर्ज करें';
+
+  @override
+  String get setYourAvailability => 'अपनी उपलब्धता निर्धारित करें';
+
+  @override
+  String get selectDaysYouAreAvailable => 'आप किस दिन उपलब्ध हैं चुनें';
+
+  @override
+  String get sunday => 'रवि';
+
+  @override
+  String get monday => 'सोम';
+
+  @override
+  String get tuesday => 'मंगल';
+
+  @override
+  String get wednesday => 'बुध';
+
+  @override
+  String get thursday => 'गुरु';
+
+  @override
+  String get friday => 'शुक्र';
+
+  @override
+  String get saturday => 'शनि';
+
+  @override
+  String get selectTimeSlotYouAreAvailable =>
+      'आप किस समय स्लॉट में उपलब्ध हैं चुनें';
+
+  @override
+  String get from => 'से';
+
+  @override
+  String get to => 'तक';
+
+  @override
+  String get selectTime => 'समय चुनें';
+
+  @override
+  String get choosethedaysandtimeswhenyoureavailabletoprovideservices =>
+      'Choose the days and times when you\'re available to provide services';
+
+  @override
+  String get pleaseSelectADay => 'कृपया एक दिन चुनें';
+
+  @override
+  String get pleaseSelectATime => 'कृपया एक समय चुनें';
+
+  @override
+  String get chooseTime => 'समय चुनें';
+
+  @override
+  String get endTimeMustBeAfterStartTime =>
+      'समाप्ति समय प्रारंभ समय के बाद होना चाहिए';
 }

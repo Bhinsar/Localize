@@ -55,7 +55,6 @@ class _ServicesListState extends State<ServicesList> {
   Widget build(BuildContext context) {
     final l10 = AppLocalizations.of(context)!;
     final d = Dimensions(context);
-    // FIX 1: Wrap the content in a Form widget and attach the formKey.
     return Form(
       key: widget.formKey,
       child: Padding(
