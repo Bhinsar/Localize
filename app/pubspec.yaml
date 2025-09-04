@@ -37,7 +37,7 @@ dependencies:
   go_router: ^16.2.0
   flutter_secure_storage: ^9.2.4
   dio: ^5.9.0
-  cached_network_image: ^3.4.1
+  cached_network_image: ^3.3.1
   google_sign_in: ^7.1.1
   flutter_localizations:
     sdk: flutter
@@ -45,6 +45,11 @@ dependencies:
   shared_preferences: ^2.5.3
   intl: ^0.20.2
   flutter_dotenv: ^6.0.0
+  google_maps_flutter: ^2.12.3
+  geolocator: ^14.0.2
+  geocoding: ^4.0.0
+  permission_handler: ^11.3.1
+  google_places_for_flutter: ^1.0.1
 
 dev_dependencies:
   flutter_test:

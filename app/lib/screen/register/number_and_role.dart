@@ -124,7 +124,7 @@ class _NumberAndRoleState extends State<NumberAndRole> {
                   SizedBox(height: d.height * 0.02),
                   // --- REPLACED: Using DropdownButtonFormField for better integration ---
                   DropdownButtonFormField<String>(
-                    value: _selectedRole,
+                    initialValue: _selectedRole,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0),

@@ -101,7 +101,7 @@ class _ScheduleState extends State<Schedule> {
               hourMinuteTextColor: Colors.green,
               hourMinuteColor: Colors.green.withOpacity(0.1),
               confirmButtonStyle: ButtonStyle(
-                foregroundColor: MaterialStateProperty.all(Colors.green),
+                foregroundColor: WidgetStateProperty.all(Colors.green),
               ),
             ),
             colorScheme: const ColorScheme.light(

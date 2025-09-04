@@ -211,4 +211,35 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get endTimeMustBeAfterStartTime => 'End time must be after start time';
+
+  @override
+  String get searchforalocation => 'Search for a location...';
+
+  @override
+  String get selectyourworkinglocation => 'Select Your Working Location';
+
+  @override
+  String get pleaseselectanaddress => 'Please select an address';
+
+  @override
+  String get confirmlocation => 'Confirm Location';
+
+  @override
+  String get locationServicesDisabled => 'Location Services Disabled';
+
+  @override
+  String get pleaseEnableLocationServices =>
+      'Please enable location services to use this feature.';
+
+  @override
+  String get locationPermissionDenied => 'Location permission denied.';
+
+  @override
+  String get couldNotGetCurrentLocation => 'Could not get current location.';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get openSettings => 'Open Settings';
 }

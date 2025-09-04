@@ -1,8 +1,17 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
+}
+import java.util.Properties
+
+val dotEnvFile = rootProject.file("../.env")
+if (dotEnvFile.exists()) {
+    Properties().apply {
+        dotEnvFile.inputStream().use { load(it) }
+    }.forEach { (key, value) ->
+        project.extra[key.toString()] = value
+    }
 }
 
 android {
@@ -20,14 +29,12 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.bhinsar.localize"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        manifestPlaceholders["GOOGLE_MAPS_API_KEY"] = project.extra["GOOGLE_MAPS_API_KEY"] as String? ?: ""
     }
 
     buildTypes {

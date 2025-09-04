@@ -65,5 +65,16 @@
   "pleaseSelectADay": "Please select a day",
   "pleaseSelectATime": "Please select a time",
   "chooseTime": "Choose time",
-  "endTimeMustBeAfterStartTime": "End time must be after start time"
+  "endTimeMustBeAfterStartTime": "End time must be after start time",
+  "searchforalocation" : "Search for a loaction",
+  "selectyourworkinglocation": "Select Your Working Location",
+  "searchforalocation": "Search for a location...",
+  "pleaseselectanaddress": "Please select an address",
+  "confirmlocation": "Confirm Location",
+  "locationServicesDisabled": "Location Services Disabled",
+  "pleaseEnableLocationServices": "Please enable location services to use this feature.",
+  "locationPermissionDenied": "Location permission denied.",
+  "couldNotGetCurrentLocation": "Could not get current location.",
+  "cancel": "Cancel",
+  "openSettings": "Open Settings"
 }

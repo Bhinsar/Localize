@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:app/api/services/service_api.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/models/provider_details.dart';
@@ -34,7 +33,7 @@ class _ServicesListState extends State<ServicesList> {
   Future<void> _fetchAvailableServices() async {
     try {
       final services = await _serviceApi.fetchServices();
-      if (services != null && !services.containsKey('error')) {
+      if (!services.containsKey('error')) {
         setState(() {
           _availableServices.addAll(
             (services['services'] as List)

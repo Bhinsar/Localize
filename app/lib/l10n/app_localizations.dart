@@ -493,6 +493,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'End time must be after start time'**
   String get endTimeMustBeAfterStartTime;
+
+  /// No description provided for @searchforalocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Search for a location...'**
+  String get searchforalocation;
+
+  /// No description provided for @selectyourworkinglocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Your Working Location'**
+  String get selectyourworkinglocation;
+
+  /// No description provided for @pleaseselectanaddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select an address'**
+  String get pleaseselectanaddress;
+
+  /// No description provided for @confirmlocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Location'**
+  String get confirmlocation;
+
+  /// No description provided for @locationServicesDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Location Services Disabled'**
+  String get locationServicesDisabled;
+
+  /// No description provided for @pleaseEnableLocationServices.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enable location services to use this feature.'**
+  String get pleaseEnableLocationServices;
+
+  /// No description provided for @locationPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Location permission denied.'**
+  String get locationPermissionDenied;
+
+  /// No description provided for @couldNotGetCurrentLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not get current location.'**
+  String get couldNotGetCurrentLocation;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @openSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Settings'**
+  String get openSettings;
 }
 
 class _AppLocalizationsDelegate

@@ -213,4 +213,36 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get endTimeMustBeAfterStartTime =>
       'समाप्ति समय प्रारंभ समय के बाद होना चाहिए';
+
+  @override
+  String get searchforalocation => 'एक स्थान खोजें...';
+
+  @override
+  String get selectyourworkinglocation => 'अपना कार्य स्थान चुनें';
+
+  @override
+  String get pleaseselectanaddress => 'कृपया एक पता चुनें';
+
+  @override
+  String get confirmlocation => 'स्थान की पुष्टि करें';
+
+  @override
+  String get locationServicesDisabled => 'लोकेशन सेवाएं अक्षम हैं';
+
+  @override
+  String get pleaseEnableLocationServices =>
+      'कृपया इस सुविधा का उपयोग करने के लिए लोकेशन सेवाएं सक्षम करें।';
+
+  @override
+  String get locationPermissionDenied => 'लोकेशन की अनुमति अस्वीकार कर दी गई।';
+
+  @override
+  String get couldNotGetCurrentLocation =>
+      'वर्तमान लोकेशन प्राप्त नहीं हो सका।';
+
+  @override
+  String get cancel => 'रद्द करें';
+
+  @override
+  String get openSettings => 'सेटिंग्स खोलें';
 }

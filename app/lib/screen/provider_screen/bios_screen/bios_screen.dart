@@ -34,7 +34,7 @@ class _BiosScreenState extends State<BiosScreen> {
     Icons.person,
     Icons.currency_rupee,
     Icons.schedule,
-    Icons.location_on
+    Icons.location_on,
   ];
 
   late List<Widget> _pages;
@@ -43,11 +43,11 @@ class _BiosScreenState extends State<BiosScreen> {
   void initState() {
     super.initState();
     _pages = [
-      Schedule(data: providerDetails, formKey: _formKeys[0]),
-      ServicesList(data: providerDetails, formKey: _formKeys[1]),
-      Profile(data: providerDetails, formKey: _formKeys[2]),
-      Price(data: providerDetails, formKey: _formKeys[3]),
-      Address(data: providerDetails, formKey: _formKeys[4])
+      ServicesList(data: providerDetails, formKey: _formKeys[0]),
+      Profile(data: providerDetails, formKey: _formKeys[1]),
+      Price(data: providerDetails, formKey: _formKeys[2]),
+      Schedule(data: providerDetails, formKey: _formKeys[3]),
+      AddressScreen(data: providerDetails, formKey: _formKeys[4]),
     ];
   }
 
@@ -69,6 +69,7 @@ class _BiosScreenState extends State<BiosScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Form submitted successfully!')),
         );
+         print(providerDetails.toJson());
       }
     }
   }
@@ -115,13 +116,28 @@ class _BiosScreenState extends State<BiosScreen> {
                   IconData icon;
 
                   if (i < _currentPage) {
-                    circleColor = const Color.fromARGB(255, 50, 116, 52); // Green
+                    circleColor = const Color.fromARGB(
+                      255,
+                      50,
+                      116,
+                      52,
+                    ); // Green
                     icon = Icons.check;
                   } else if (i == _currentPage) {
-                    circleColor = const Color.fromARGB(255, 50, 116, 52); // Green
+                    circleColor = const Color.fromARGB(
+                      255,
+                      50,
+                      116,
+                      52,
+                    ); // Green
                     icon = _icons[i];
                   } else {
-                    circleColor = const Color.fromARGB(255, 197, 197, 197); // Grey
+                    circleColor = const Color.fromARGB(
+                      255,
+                      197,
+                      197,
+                      197,
+                    ); // Grey
                     icon = _icons[i];
                   }
 
@@ -158,7 +174,8 @@ class _BiosScreenState extends State<BiosScreen> {
                     child: Text(
                       l10.back,
                       style: TextStyle(
-                          color: Theme.of(context).textTheme.bodyLarge?.color),
+                        color: Theme.of(context).textTheme.bodyLarge?.color,
+                      ),
                     ),
                   ),
                   const Spacer(),
@@ -168,18 +185,22 @@ class _BiosScreenState extends State<BiosScreen> {
                         ? Text(
                             l10.next,
                             style: TextStyle(
-                                color:
-                                    Theme.of(context).textTheme.bodyLarge?.color),
+                              color: Theme.of(
+                                context,
+                              ).textTheme.bodyLarge?.color,
+                            ),
                           )
                         : Text(
                             l10.finish,
                             style: TextStyle(
-                                color:
-                                    Theme.of(context).textTheme.bodyLarge?.color),
+                              color: Theme.of(
+                                context,
+                              ).textTheme.bodyLarge?.color,
+                            ),
                           ),
                   ),
                 ],
-              )
+              ),
             ],
           ),
         ),

@@ -42,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
         _emailController.text,
         _passwordController.text,
       );
-      if (response != null && response.containsKey('role')) {
+      if (response.containsKey('role')) {
         final role = response['role'];
         final existNumber = await _storage.read(key: 'existNumber');
         final bios = await _storage.read(key: 'bios');
