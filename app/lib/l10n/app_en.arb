@@ -76,5 +76,6 @@
   "locationPermissionDenied": "Location permission denied.",
   "couldNotGetCurrentLocation": "Could not get current location.",
   "cancel": "Cancel",
-  "openSettings": "Open Settings"
+  "openSettings": "Open Settings",
+  "errorresgistringprovider": "Error Resgisting the Provider. Please try again!"
 }

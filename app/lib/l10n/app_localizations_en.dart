@@ -242,4 +242,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get openSettings => 'Open Settings';
+
+  @override
+  String get errorresgistringprovider =>
+      'Error Resgisting the Provider. Please try again!';
 }

@@ -76,5 +76,6 @@
   "locationPermissionDenied": "लोकेशन की अनुमति अस्वीकार कर दी गई।",
   "couldNotGetCurrentLocation": "वर्तमान लोकेशन प्राप्त नहीं हो सका।",
   "cancel": "रद्द करें",
-  "openSettings": "सेटिंग्स खोलें"
+  "openSettings": "सेटिंग्स खोलें",
+  "errorresgistringprovider": "प्रदाता को पंजीकृत करने में त्रुटि। कृपया पुनः प्रयास करें!"
 }

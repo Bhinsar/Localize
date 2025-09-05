@@ -85,12 +85,7 @@ class _ServicesListState extends State<ServicesList> {
                   Expanded(
                     child: FormField<Services>(
                       initialValue: widget.data.service != null
-                          ? _availableServices.firstWhere(
-                              (service) =>
-                                  service.id.toString() ==
-                                  widget.data.service,
-                              orElse: () => Services(),
-                            )
+                          ? widget.data.service
                           : null,
                       validator: (value) {
                         if (value == null ||

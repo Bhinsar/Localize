@@ -31,15 +31,46 @@ class _ScheduleState extends State<Schedule> {
   TimeOfDay? _endTime;
 
   @override
+  void initState() {
+    super.initState();
+    // Initialize selectedDays and times from availabilitySchedule
+    selectedDays = widget.data.availabilitySchedule?.keys.toList() ?? [];
+    if (widget.data.availabilitySchedule != null &&
+        widget.data.availabilitySchedule!.isNotEmpty) {
+      final firstTimeRange = widget.data.availabilitySchedule!.values.first.first;
+      final times = firstTimeRange.split(' - ');
+      if (times.length == 2) {
+        _startTime = _parseTimeOfDay(times[0]);
+        _endTime = _parseTimeOfDay(times[1]);
+        if (_startTime != null) {
+          _startController.text = _formatTimeOfDay(_startTime!);
+        }
+        if (_endTime != null) {
+          _endController.text = _formatTimeOfDay(_endTime!);
+        }
+      }
+    }
+  }
+
+  @override
   void dispose() {
     _startController.dispose();
     _endController.dispose();
     super.dispose();
   }
 
-  // Helper to get localized day names for the UI
+  TimeOfDay? _parseTimeOfDay(String time) {
+    try {
+      final parts = time.split(':');
+      final hour = int.parse(parts[0]);
+      final minute = int.parse(parts[1]);
+      return TimeOfDay(hour: hour, minute: minute);
+    } catch (e) {
+      return null;
+    }
+  }
+
   String _getLocalizedDay(String dayKey, AppLocalizations l10) {
-    // ... (no changes in this method)
     switch (dayKey) {
       case "mon":
         return l10.monday;
@@ -67,23 +98,24 @@ class _ScheduleState extends State<Schedule> {
   }
 
   void _updateScheduleDirectly() {
-    widget.data.availabilitySchedule?.clear();
+    if (widget.formKey.currentState?.validate() ?? false) {
+      widget.data.availabilitySchedule ??= {};
+      widget.data.availabilitySchedule!.clear();
 
-    if (selectedDays.isNotEmpty && _startTime != null && _endTime != null) {
-      final startInMinutes = _startTime!.hour * 60 + _startTime!.minute;
-      final endInMinutes = _endTime!.hour * 60 + _endTime!.minute;
+      if (selectedDays.isNotEmpty && _startTime != null && _endTime != null) {
+        final startInMinutes = _startTime!.hour * 60 + _startTime!.minute;
+        final endInMinutes = _endTime!.hour * 60 + _endTime!.minute;
 
-      if (endInMinutes > startInMinutes) {
-        final timeRange =
-            '${_formatTimeOfDay(_startTime!)} - ${_formatTimeOfDay(_endTime!)}';
-
-        for (String dayKey in selectedDays) {
-          final fullDayName = allDays[dayKey]!;
-          widget.data.availabilitySchedule?[fullDayName] = [timeRange];
+        if (endInMinutes > startInMinutes) {
+          final timeRange =
+              '${_formatTimeOfDay(_startTime!)} - ${_formatTimeOfDay(_endTime!)}';
+          for (String dayKey in selectedDays) {
+            final fullDayName = allDays[dayKey]!;
+            widget.data.availabilitySchedule![fullDayName] = [timeRange];
+          }
         }
       }
     }
-
   }
 
   Future<void> _pickTime(BuildContext context, bool isStartTime) async {
@@ -97,12 +129,7 @@ class _ScheduleState extends State<Schedule> {
               backgroundColor: Colors.white,
               dialBackgroundColor: Colors.green.withOpacity(0.1),
               dialHandColor: Colors.green,
-              entryModeIconColor: Colors.green,
-              hourMinuteTextColor: Colors.green,
-              hourMinuteColor: Colors.green.withOpacity(0.1),
-              confirmButtonStyle: ButtonStyle(
-                foregroundColor: WidgetStateProperty.all(Colors.green),
-              ),
+              hourMinuteTextStyle: TextStyle(color: Colors.green, fontSize: 20),
             ),
             colorScheme: const ColorScheme.light(
               primary: Colors.green,
@@ -154,7 +181,6 @@ class _ScheduleState extends State<Schedule> {
               style: TextStyle(fontSize: d.font16, fontWeight: FontWeight.w400),
             ),
             SizedBox(height: d.height10),
-
             FormField<List<String>>(
               initialValue: selectedDays,
               validator: (value) {
@@ -195,16 +221,13 @@ class _ScheduleState extends State<Schedule> {
                                     selectedDays.add(dayKey);
                                   }
                                   field.didChange(selectedDays);
-                                  // **** 3. CALL THE UPDATE METHOD AFTER CHANGING A DAY ****
                                   _updateScheduleDirectly();
                                 });
                               },
                               child: Text(
                                 _getLocalizedDay(dayKey, l10),
                                 style: TextStyle(
-                                  color: isSelected
-                                      ? Colors.white
-                                      : Colors.black,
+                                  color: isSelected ? Colors.white : Colors.black,
                                   fontSize: d.font16,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -229,80 +252,76 @@ class _ScheduleState extends State<Schedule> {
               },
             ),
             SizedBox(height: d.height20),
-            if (selectedDays.isNotEmpty) ...[
-              // ... (The rest of the TextFormFields remain the same, but the final button is removed)
-              Text(
-                l10.from,
-                style: TextStyle(
-                  fontSize: d.font16,
-                  fontWeight: FontWeight.bold,
-                ),
+            Text(
+              l10.from,
+              style: TextStyle(
+                fontSize: d.font16,
+                fontWeight: FontWeight.bold,
               ),
-              SizedBox(height: d.height10),
-              TextFormField(
-                controller: _startController,
-                readOnly: true,
-                decoration: InputDecoration(
-                  labelText: l10.chooseTime,
-                  labelStyle: const TextStyle(color: Colors.grey),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Colors.green, width: 2),
-                  ),
-                  suffixIcon: const Icon(Icons.access_time),
+            ),
+            SizedBox(height: d.height10),
+            TextFormField(
+              controller: _startController,
+              readOnly: true,
+              decoration: InputDecoration(
+                labelText: l10.chooseTime,
+                labelStyle: const TextStyle(color: Colors.grey),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return l10.pleaseSelectATime;
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: Colors.green, width: 2),
+                ),
+                suffixIcon: const Icon(Icons.access_time),
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return l10.pleaseSelectATime;
+                }
+                return null;
+              },
+              onTap: () => _pickTime(context, true),
+            ),
+            SizedBox(height: d.height20),
+            Text(
+              l10.to,
+              style: TextStyle(
+                fontSize: d.font16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: d.height10),
+            TextFormField(
+              controller: _endController,
+              readOnly: true,
+              decoration: InputDecoration(
+                labelText: l10.chooseTime,
+                labelStyle: const TextStyle(color: Colors.grey),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: Colors.green, width: 2),
+                ),
+                suffixIcon: const Icon(Icons.access_time),
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return l10.pleaseSelectATime;
+                }
+                if (_startTime != null && _endTime != null) {
+                  final startInMinutes = _startTime!.hour * 60 + _startTime!.minute;
+                  final endInMinutes = _endTime!.hour * 60 + _endTime!.minute;
+                  if (endInMinutes <= startInMinutes) {
+                    return l10.endTimeMustBeAfterStartTime;
                   }
-                  return null;
-                },
-                onTap: () => _pickTime(context, true),
-              ),
-              SizedBox(height: d.height20),
-              Text(
-                l10.to,
-                style: TextStyle(
-                  fontSize: d.font16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: d.height10),
-              TextFormField(
-                controller: _endController,
-                readOnly: true,
-                decoration: InputDecoration(
-                  labelText: l10.chooseTime,
-                  labelStyle: const TextStyle(color: Colors.grey),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Colors.green, width: 2),
-                  ),
-                  suffixIcon: const Icon(Icons.access_time),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return l10.pleaseSelectATime;
-                  }
-                  if (_startTime != null && _endTime != null) {
-                    final startInMinutes =
-                        _startTime!.hour * 60 + _startTime!.minute;
-                    final endInMinutes = _endTime!.hour * 60 + _endTime!.minute;
-                    if (endInMinutes <= startInMinutes) {
-                      return l10.endTimeMustBeAfterStartTime;
-                    }
-                  }
-                  return null;
-                },
-                onTap: () => _pickTime(context, false),
-              ),
-            ],
+                }
+                return null;
+              },
+              onTap: () => _pickTime(context, false),
+            ),
           ],
         ),
       ),

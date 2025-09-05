@@ -1,3 +1,4 @@
+import 'package:app/api/provider/provider_api.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/models/provider_details.dart';
 import 'package:app/screen/provider_screen/bios_screen/address.dart';
@@ -6,7 +7,9 @@ import 'package:app/screen/provider_screen/bios_screen/profile.dart';
 import 'package:app/screen/provider_screen/bios_screen/schedule.dart';
 import 'package:app/screen/provider_screen/bios_screen/services_list.dart';
 import 'package:app/utils/dimensions.dart';
+import 'package:app/widgets/snackbar_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class BiosScreen extends StatefulWidget {
   const BiosScreen({super.key});
@@ -19,6 +22,7 @@ class _BiosScreenState extends State<BiosScreen> {
   final _pageController = PageController();
   int _currentPage = 0;
   final ProviderDetails providerDetails = ProviderDetails();
+  final _providerApi = ProviderApi();
 
   // Each key must be attached to a Form widget in the corresponding page.
   final List<GlobalKey<FormState>> _formKeys = [
@@ -66,11 +70,22 @@ class _BiosScreenState extends State<BiosScreen> {
           curve: Curves.ease,
         );
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Form submitted successfully!')),
-        );
-         print(providerDetails.toJson());
+        _registerProvider();
       }
+    }
+  }
+
+  Future<void> _registerProvider() async {
+    final l10 = AppLocalizations.of(context)!;
+    try {
+      final response = await _providerApi.registerProvider(providerDetails);
+      if (!response.containsKey("error")) {
+        context.go('/provider/home');
+      } else {
+        throw Exception(response["error"]);
+      }
+    } catch (e) {
+      SnackbarUtils.showError(context, l10.errorresgistringprovider);
     }
   }
 

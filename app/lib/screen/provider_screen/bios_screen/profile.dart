@@ -30,7 +30,7 @@ class _ProfileState extends State<Profile> {
             Text(l10.tellUsAboutYourself, style: TextStyle(fontSize: d.font20)),
             SizedBox(height: d.height10,),
             TextFormField(
-              decoration: InputDecoration(
+              decoration: InputDecoration(              
                 hintText: l10.tellUsAboutYourself,
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),

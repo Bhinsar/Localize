@@ -2,6 +2,7 @@ import 'package:app/l10n/app_localizations.dart';
 import 'package:app/models/provider_details.dart';
 import 'package:app/utils/dimensions.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class Price extends StatefulWidget {
   final ProviderDetails data;
@@ -16,7 +17,6 @@ class _PriceState extends State<Price> {
   @override
   void initState() {
     super.initState();
-    widget.data.price = 0.0;
     widget.data.price_unit = widget.data.service?.name == 'Milk'
         ? "perLiter"
         : widget.data.service?.name == 'Newspaper'
@@ -51,7 +51,8 @@ class _PriceState extends State<Price> {
                 Container(
                   width: d.width * 0.55,
                   child: TextFormField(
-                    keyboardType: TextInputType.number,
+                    initialValue: widget.data.price != null ? widget.data.price.toString(): null,
+                    keyboardType: TextInputType.numberWithOptions(),
                     decoration: InputDecoration(
                       hintText: '100',
                       focusedBorder: OutlineInputBorder(
@@ -59,7 +60,7 @@ class _PriceState extends State<Price> {
                       ),
                     ),
                     onChanged: (value) {
-                      widget.data.price = double.tryParse(value) ?? 0.0;
+                      widget.data.price = double.tryParse(value);
                     },
                     validator: (value) {
                       if (value == null || value.isEmpty) {

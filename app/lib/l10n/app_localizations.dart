@@ -553,6 +553,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open Settings'**
   String get openSettings;
+
+  /// No description provided for @errorresgistringprovider.
+  ///
+  /// In en, this message translates to:
+  /// **'Error Resgisting the Provider. Please try again!'**
+  String get errorresgistringprovider;
 }
 
 class _AppLocalizationsDelegate

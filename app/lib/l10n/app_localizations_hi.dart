@@ -245,4 +245,8 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get openSettings => 'सेटिंग्स खोलें';
+
+  @override
+  String get errorresgistringprovider =>
+      'प्रदाता को पंजीकृत करने में त्रुटि। कृपया पुनः प्रयास करें!';
 }

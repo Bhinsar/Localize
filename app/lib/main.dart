@@ -45,21 +45,26 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = Provider.of<LocaleProvider>(context);
 
-    return MaterialApp.router(
-      locale: provider.locale,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-        textTheme: TextTheme(
-          bodyLarge: TextStyle(color: Colors.green.shade900),
-          bodyMedium: TextStyle(color: Colors.green.shade800),
-          headlineLarge: TextStyle(color: Colors.green.shade700),
-          headlineMedium: TextStyle(color: Colors.green.shade600),
-          headlineSmall: TextStyle(color: Colors.green.shade500),
+    return GestureDetector(
+      onTap: () {
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: MaterialApp.router(
+        locale: provider.locale,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        theme: ThemeData(
+          primarySwatch: Colors.green,
+          textTheme: TextTheme(
+            bodyLarge: TextStyle(color: Colors.green.shade900),
+            bodyMedium: TextStyle(color: Colors.green.shade800),
+            headlineLarge: TextStyle(color: Colors.green.shade700),
+            headlineMedium: TextStyle(color: Colors.green.shade600),
+            headlineSmall: TextStyle(color: Colors.green.shade500),
+          ),
         ),
+        routerConfig: _router,
       ),
-      routerConfig: _router,
     );
   }
 

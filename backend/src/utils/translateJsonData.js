@@ -33,13 +33,10 @@ exports.translateJsonData = async function (data, targetLanguage) {
 
         const match = translatedText.match(/```json\s*([\s\S]*?)\s*```/);
 
-        // If a match is found, use the captured group, otherwise use the whole string
         const jsonToParse = match ? match[1] : translatedText;
 
-        // Parse the cleaned text back into a JSON object
         return JSON.parse(jsonToParse);
 
-        // --- END: IMPROVED PARSING LOGIC ---
 
     } catch (error) {
         console.error("Error during translation:", error);

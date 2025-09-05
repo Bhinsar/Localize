@@ -19,14 +19,9 @@ class AddressScreen extends StatefulWidget {
 
 class _AddressScreenState extends State<AddressScreen> {
   final Completer<GoogleMapController> _controller = Completer();
-
-  static const CameraPosition _kInitialPosition = CameraPosition(
-    target: LatLng(26.9124, 75.7873), // Jaipur, Rajasthan
-    zoom: 14.0,
-  );
+  late final CameraPosition _kInitialPosition;
 
   LatLng? _currentMapCenter;
-  String _currentAddress = "Select a location...";
   final TextEditingController _addressDisplayController =
       TextEditingController();
   bool _isFetchingAddress = false;
@@ -34,9 +29,24 @@ class _AddressScreenState extends State<AddressScreen> {
   @override
   void initState() {
     super.initState();
-    // It's safer to wait for the first frame to ensure context is available
+
+    bool hasInitialLocation =
+        widget.data.location.latitude != 0.0 &&
+        widget.data.location.longitude != 0.0;
+
+    _kInitialPosition = CameraPosition(
+      target: hasInitialLocation
+          ? LatLng(
+              widget.data.location.latitude,
+              widget.data.location.longitude,
+            )
+          : const LatLng(26.9124, 75.7873),
+      zoom: hasInitialLocation ? 16.0 : 12.0,
+    );
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _requestLocationPermission();
+      _getAddressFromLatLng(_kInitialPosition.target);
     });
   }
 
@@ -47,19 +57,18 @@ class _AddressScreenState extends State<AddressScreen> {
   }
 
   void _showEnableLocationDialog() {
-    final l10 = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        title: Text(l10.locationServicesDisabled),
-        content: Text(l10.pleaseEnableLocationServices),
+        title: const Text("Location Services Disabled"),
+        content: const Text("Please enable location services in settings."),
         actions: <Widget>[
           TextButton(
-            child: Text(l10.cancel),
+            child: const Text("Cancel"),
             onPressed: () => Navigator.of(context).pop(),
           ),
           TextButton(
-            child: Text(l10.openSettings),
+            child: const Text("Open Settings"),
             onPressed: () {
               Geolocator.openLocationSettings();
               Navigator.of(context).pop();
@@ -71,30 +80,20 @@ class _AddressScreenState extends State<AddressScreen> {
   }
 
   Future<void> _requestLocationPermission() async {
-    final l10 = AppLocalizations.of(context)!;
-
     final serviceStatus = await Permission.location.serviceStatus;
     if (!serviceStatus.isEnabled) {
       debugPrint("Location services are disabled.");
-      setState(() => _currentAddress = l10.locationServicesDisabled);
       _showEnableLocationDialog();
       return;
     }
 
     var status = await Permission.location.status;
-    if (status.isGranted) {
-      _getCurrentLocation();
-    } else {
-      if (await Permission.location.request().isGranted) {
-        _getCurrentLocation();
-      } else {
-        setState(() => _currentAddress = l10.locationPermissionDenied);
-      }
+    if (status.isDenied) {
+      await Permission.location.request();
     }
   }
 
   Future<void> _getCurrentLocation() async {
-    final l10 = AppLocalizations.of(context)!;
     try {
       final Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
@@ -103,7 +102,9 @@ class _AddressScreenState extends State<AddressScreen> {
       _moveCameraToPosition(newPosition);
     } catch (e) {
       debugPrint("Error getting current location: $e");
-      setState(() => _currentAddress = l10.couldNotGetCurrentLocation);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Could not get current location.")),
+      );
     }
   }
 
@@ -121,8 +122,11 @@ class _AddressScreenState extends State<AddressScreen> {
 
   Future<void> _getAddressFromLatLng(LatLng position) async {
     if (_isFetchingAddress) return;
+    if (!mounted) return;
+
     setState(() {
       _isFetchingAddress = true;
+      _currentMapCenter = position;
     });
 
     try {
@@ -135,28 +139,19 @@ class _AddressScreenState extends State<AddressScreen> {
         final address =
             "${p.name}, ${p.subLocality}, ${p.locality}, ${p.postalCode}";
         if (mounted) {
-          setState(() {
-            _currentAddress = address;
-            _addressDisplayController.text = address; // Sync display field
-          });
+          _addressDisplayController.text = address;
         }
       }
     } catch (e) {
-      if (mounted) setState(() => _currentAddress = "Could not fetch address");
+      if (mounted) {
+        _addressDisplayController.text = "Could not fetch address";
+      }
     } finally {
       if (mounted) {
         setState(() {
           _isFetchingAddress = false;
         });
       }
-    }
-  }
-
-  void _onCameraMove(CameraPosition position) {
-    _currentMapCenter = position.target;
-     // Clear the text field while moving to indicate a new selection is in progress
-    if (_addressDisplayController.text != 'Fetching address...') {
-       _addressDisplayController.text = 'Fetching address...';
     }
   }
 
@@ -168,15 +163,8 @@ class _AddressScreenState extends State<AddressScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final d = Dimensions(context);
-    final l10 = AppLocalizations.of(context)!;
-
     return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: d.width10,
-        vertical: d.height20,
-      ),
-      // We wrap the entire map and confirmation box with the Form
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
       child: Form(
         key: widget.formKey,
         child: Stack(
@@ -184,7 +172,7 @@ class _AddressScreenState extends State<AddressScreen> {
             GoogleMap(
               initialCameraPosition: _kInitialPosition,
               onMapCreated: (c) => _controller.complete(c),
-              onCameraMove: _onCameraMove,
+              onCameraMove: (position) => _currentMapCenter = position.target,
               onCameraIdle: _onCameraIdle,
               myLocationButtonEnabled: false,
               myLocationEnabled: false,
@@ -200,7 +188,19 @@ class _AddressScreenState extends State<AddressScreen> {
               bottom: 0,
               left: 0,
               right: 0,
-              child: _buildConfirmationContainer(d, l10),
+              child: _buildConfirmationContainer(),
+            ),
+            Positioned(
+              bottom: 200, // Adjust as needed
+              right: 10,
+              child: FloatingActionButton(
+                onPressed: _getCurrentLocation,
+                backgroundColor: Colors.white,
+                child: Icon(
+                  Icons.my_location,
+                  color: Theme.of(context).primaryColor,
+                ),
+              ),
             ),
           ],
         ),
@@ -208,42 +208,42 @@ class _AddressScreenState extends State<AddressScreen> {
     );
   }
 
-  Widget _buildConfirmationContainer(Dimensions d, AppLocalizations l10) {
+  Widget _buildConfirmationContainer() {
     return Material(
       elevation: 8.0,
       borderRadius: BorderRadius.circular(10),
       child: Container(
-        padding: EdgeInsets.fromLTRB(
-          d.width20,
-          d.height20,
-          d.width20,
-          d.height * 0.02,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              l10.selectyourworkinglocation.toUpperCase(),
+              "SELECT YOUR WORKING LOCATION",
               style: TextStyle(
-                fontSize: d.font12,
+                fontSize: 12,
                 fontWeight: FontWeight.bold,
                 color: Colors.grey[600],
               ),
             ),
-            SizedBox(height: d.height10),
+            const SizedBox(height: 10),
             TextFormField(
               controller: _addressDisplayController,
-              readOnly: true, 
+              readOnly: true,
               decoration: InputDecoration(
-                prefixIcon: Icon(Icons.location_on, color: const Color.fromARGB(255, 58, 117, 60)),
+                prefixIcon: Icon(
+                  Icons.location_on,
+                  color: Theme.of(context).primaryColor,
+                ),
                 border: InputBorder.none,
                 hintText: 'Select a location on the map',
-                contentPadding: EdgeInsets.symmetric(vertical: 15.0),
+                contentPadding: const EdgeInsets.symmetric(vertical: 15.0),
               ),
               validator: (value) {
-                if (_currentMapCenter == null || value == null || value.isEmpty) {
-                  return 'Please select a location on the map.';
+                if (widget.data.location.latitude == null ||
+                    widget.data.location.longitude == null ||
+                    widget.data.location.address == null) {
+                  return 'Please select a valid location on the map.';
                 }
                 return null;
               },
@@ -251,37 +251,26 @@ class _AddressScreenState extends State<AddressScreen> {
                 if (_currentMapCenter != null) {
                   widget.data.location.latitude = _currentMapCenter!.latitude;
                   widget.data.location.longitude = _currentMapCenter!.longitude;
-                  widget.data.location.address = _currentAddress;
+                  widget.data.location.address = value;
                 }
               },
             ),
             if (_isFetchingAddress)
-                const Padding(
-                  padding: EdgeInsets.only(top: 8.0),
-                  child: LinearProgressIndicator(),
-                ),
-            SizedBox(height: d.height20),
+              const Padding(
+                padding: EdgeInsets.only(top: 8.0),
+                child: LinearProgressIndicator(),
+              ),
+            const SizedBox(height: 20),
             SizedBox(
               width: double.infinity,
               height: 50,
               child: ElevatedButton(
                 onPressed: () {
-                  // **FIXED: Button now validates and saves the form**
                   if (widget.formKey.currentState!.validate()) {
                     widget.formKey.currentState!.save();
-                    // You can add navigation or a success message here
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          'Location Saved: Lat: ${widget.data.location.latitude}, Lng: ${widget.data.location.longitude}',
-                        ),
-                      ),
-                    );
-                    print('Confirmed Address: ${_currentAddress}');
-                    print('Confirmed LatLng: ${_currentMapCenter}');
                   }
                 },
-                child: Text(l10.confirmlocation),
+                child: const Text("Confirm Location"),
               ),
             ),
           ],
