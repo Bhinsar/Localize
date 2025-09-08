@@ -2,12 +2,13 @@ const e = require("cors");
 const {supabase} = require("../utils/supabase");
 const fs = require('fs').promises;
 const path = require('path');
+const { translateJsonData } = require("../utils/translateJsonData");
+const { error } = require("console");
 
 exports.registerUser = async (req, res) => {
     try {
         const { email, password, full_name } = req.body;
-
-        // Step 1: Sign up the user in Supabase Auth
+        const {language} = req.language
         const { data: authData, error: authError } = await supabase.auth.signUp({
             email,
             password,
@@ -17,11 +18,24 @@ exports.registerUser = async (req, res) => {
             return res.status(400).json({ error: authError.message });
         }
         if (!authData.user) throw new Error("Registration failed: No user returned");
+
+        let storeName = full_name;
+        
+        if(language != 'en'|| language.toLowerCase() != "english"){
+            const nameToTranslate = {name: storeName};
+            const translate = await translateJsonData(nameToTranslate,'en');
+            if(!translate){
+                throw new Error("Error translating the name");
+            }else{
+                storeName = translate.name;
+            }
+        }
+
         const { error: profileError } = await supabase
             .from("profiles")
             .insert({ 
                 id: authData.user.id,
-                full_name,
+                full_name: storeName,
             });
 
         if (profileError) throw profileError;
@@ -118,7 +132,6 @@ exports.signInWithGoogle = async (req, res) => {
         });        
 
         if (authError) {
-            console.error("Error during Google sign-in:", authError);
             throw authError;
         }
 
@@ -221,5 +234,73 @@ exports.addNumberAndRole = async (req, res) => {
     }catch(error){
         console.error("Error adding number and role:", error);
         res.status(500).json({ error: "Internal Server Error" });
+    }
+}
+
+exports.getUserProfile = async (req, res) => {
+    try {
+        const { id } = req.user;
+        const {language} = req.headers;
+
+        let { data: profiles, error: profileError } = await supabase
+            .from("profiles")
+            .select("*")
+            .eq("id", id)
+            .single();
+
+        if (profileError) {
+            throw profileError;
+        }
+
+        let providerDetails = null;
+
+        if (profiles.role === "provider") {
+            const { data: provider, error: providerError } = await supabase
+                .from("provider_details")
+                .select("*, profiles(*), services(*)")
+                .eq("user_id", id)
+                .single();
+
+            if (providerError) {
+                throw providerError;
+            }
+            providerDetails = provider;
+        }
+
+        const dataToTranslate = {};
+        if (profiles.full_name) {
+            dataToTranslate.full_name = profiles.full_name;
+        }
+        if (providerDetails?.bio) { 
+            dataToTranslate.bio = providerDetails.bio;
+            dataToTranslate.service_name =providerDetails.services.name;
+        }
+
+        if (language.toLowerCase() !== 'en' && Object.keys(dataToTranslate).length > 0) {
+            const translatedData = await translateJsonData(dataToTranslate, language);
+
+            if (translatedData) {                
+                if (providerDetails) {
+                    providerDetails.bio = translatedData.bio || providerDetails.bio;
+                    providerDetails.profiles.full_name = translatedData.full_name || providerDetails.profiles.full_name;
+                    providerDetails.services.name = translatedData.service_name || providerDetails.services.name;
+                }else{
+                    profiles.full_name = translatedData.full_name || profiles.full_name;
+                }
+            }
+        }
+
+        let responseData = {};
+        if (providerDetails) {
+            responseData = providerDetails;
+        }else{
+            responseData = profiles;
+        }
+
+        return res.status(200).json(responseData);
+
+    } catch (e) {
+        console.log("error getting user profile", e);
+        return res.status(500).json({ error: "Internal server error" });
     }
 }

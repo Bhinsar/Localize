@@ -1,3 +1,4 @@
+import 'package:app/models/profile.dart';
 import 'package:app/models/services.dart';
 
 class GeoLocation {
@@ -30,7 +31,7 @@ class GeoLocation {
 
 class ProviderDetails {
   int? id;
-  String? userId;
+  Profile? user;
   String? bio;
   double? price;
   String? price_unit;
@@ -41,7 +42,7 @@ class ProviderDetails {
 
   ProviderDetails({
     this.id,
-    this.userId,
+    this.user,
     this.bio,
     this.price,
     this.price_unit,
@@ -54,7 +55,7 @@ class ProviderDetails {
   factory ProviderDetails.fromJson(Map<String, dynamic> json) {
     return ProviderDetails(
       id: json['id'],
-      userId: json['user_id'],
+      user: json['user'] != null ? Profile.fromJson(json['profile']): null,
       bio: json['bio'],
       price: (json['price'] as num?)?.toDouble(),
       price_unit: json['price_unit'] ?? 'hourly',
@@ -70,7 +71,7 @@ class ProviderDetails {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'user_id': userId,
+      'user_id': user?.id,
       'bio': bio,
       'price': price,
       'price_unit': price_unit,
